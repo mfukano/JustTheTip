@@ -17,13 +17,11 @@
 
 package xyz.skylar.justthetip;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ViewAnimator;
-
-import xyz.skylar.justthetip.ActivityBase;
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
@@ -35,6 +33,7 @@ import xyz.skylar.justthetip.ActivityBase;
 public class MainActivity extends ActivityBase {
 
     public static final String TAG = "MainActivity";
+    private Context context;
 
     // Whether the Log Fragment is currently shown
     private boolean mLogShown;
@@ -43,6 +42,7 @@ public class MainActivity extends ActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.context = this;
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
