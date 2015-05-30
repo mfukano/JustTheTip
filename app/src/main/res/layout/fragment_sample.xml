@@ -7,7 +7,9 @@
     <xyz.skylar.justthetip.SlidingTabsLayout
           android:id="@+id/sliding_tabs"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:foregroundGravity="center_horizontal" />
 
     <android.support.v4.view.ViewPager
           android:id="@+id/viewpager"

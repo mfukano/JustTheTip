@@ -126,25 +126,28 @@ public class SlidingTabsFragment  extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             // if on the 'tag' tab (QR code stuff)
-            if (position+1 == 1) {
+            if (getPageTitle(position) == "tag") {
                 View view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
                         container, false);
                 container.addView(view);
 
                 ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
+                // hard-coded for now; will be venmo/paypal info
                 String qr_data = "Ryan-Gliever";
                 int qr_dimension = 500;
 
                 QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
                         BarcodeFormat.QR_CODE.toString(), qr_dimension);
 
+                // create and display the QR bitmap
                 try {
                     Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
                     qrImage.setImageBitmap(qr_bitmap);
                 } catch (WriterException e) {
                     e.printStackTrace();
                 }
+
                 return view;
 
             } else {

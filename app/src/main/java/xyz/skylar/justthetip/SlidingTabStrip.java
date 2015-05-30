@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -101,6 +102,7 @@ public class SlidingTabStrip extends LinearLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.i ("width", Integer.toString(getWidth()));
         final int height = getHeight();
         final int childCount = getChildCount();
         final int dividerHeightPx = (int) (Math.min(Math.max(0f, mDividerHeight), 1f) * height);
@@ -110,6 +112,7 @@ public class SlidingTabStrip extends LinearLayout {
 
         // Thick colored underline below the current selection
         if (childCount > 0) {
+            Log.i("childCount", Integer.toString(childCount));
             View selectedTitle = getChildAt(mSelectedPosition);
             int left = selectedTitle.getLeft();
             int right = selectedTitle.getRight();
