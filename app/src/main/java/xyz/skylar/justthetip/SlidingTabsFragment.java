@@ -1,5 +1,7 @@
 package xyz.skylar.justthetip;
 
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -7,7 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+
 import xyz.skylar.justthetip.SlidingTabsLayout;
 
 /**
@@ -78,7 +85,7 @@ public class SlidingTabsFragment  extends Fragment {
          */
         @Override
         public int getCount() {
-            return 10;
+            return 3;
         }
 
         /**
@@ -100,7 +107,15 @@ public class SlidingTabsFragment  extends Fragment {
          */
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Item " + (position + 1);
+            switch (position + 1){
+                case 1:
+                    return "tag";
+                case 2:
+                    return "tip";
+                case 3:
+                    return "you";
+            }
+            return "err";
         }
         // END_INCLUDE (pageradapter_getpagetitle)
 
@@ -110,18 +125,42 @@ public class SlidingTabsFragment  extends Fragment {
          */
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            // Inflate a new layout from our resources
-            View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                    container, false);
-            // Add the newly created View to the ViewPager
-            container.addView(view);
+            // if on the 'tag' tab (QR code stuff)
+            if (position+1 == 1) {
+                View view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
+                        container, false);
+                container.addView(view);
 
-            // Retrieve a TextView from the inflated View, and update it's text
-            TextView title = (TextView) view.findViewById(R.id.item_title);
-            title.setText(String.valueOf(position + 1));
+                ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
-            // Return the View
-            return view;
+                String qr_data = "Ryan-Gliever";
+                int qr_dimension = 500;
+
+                QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
+                        BarcodeFormat.QR_CODE.toString(), qr_dimension);
+
+                try {
+                    Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
+                    qrImage.setImageBitmap(qr_bitmap);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+                return view;
+
+            } else {
+                // Inflate a new layout from our resources
+                View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+                        container, false);
+                // Add the newly created View to the ViewPager
+                container.addView(view);
+
+                // Retrieve a TextView from the inflated View, and update it's text
+                TextView title = (TextView) view.findViewById(R.id.item_title);
+                title.setText(String.valueOf(position + 1));
+
+                // Return the View
+                return view;
+            }
         }
 
         /**
