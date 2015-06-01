@@ -17,14 +17,22 @@
 
 package xyz.skylar.justthetip;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
@@ -34,7 +42,8 @@ import android.view.View;
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
 public class MainActivity extends ActivityBase {
-
+    WebView myWebView;
+    ProgressDialog pDialog;
     public static final String TAG = "MainActivity";
     private Context context;
 
@@ -86,11 +95,89 @@ public class MainActivity extends ActivityBase {
         }*/
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String result=data.getStringExtra("code");
+                Log.i("","~~~Token:" + result);
+                TextView token = (TextView) findViewById(R.id.textView4);
+                token.setText(result);
+            }
+            if (resultCode == RESULT_CANCELED) {
+                Log.i("","~~~No token");
+            }
+        }
+    }
+    private String getIntentMessage(String s) {
+        Intent intent = getIntent();
+        return intent.getStringExtra(s);
+    }
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (Uri.parse(url).getHost().equals(Uri.parse("venmo.com"))) {
+                // This is my web site, so do not override; let my WebView load the page
+                return false;
+            }
+            // Otherwise, the link is not for a page on my site, so launch the browser
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+            return true;
+        }
+    }
     public void loginVenmo(View v){
-        String url = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile";
+        /*String url = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
-        startActivity(i);
+        startActivity(i);*/
+        /*myWebView = (WebView) findViewById(R.id.webView);
+        WebSettings webSettings = myWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        myWebView.setWebChromeClient(new WebChromeClient());
+        myWebView.setWebViewClient(new WebViewClient() {
+
+            boolean authComplete = false;
+            Intent resultIntent = new Intent();
+
+            @Override public void onPageStarted(WebView view, String url, Bitmap favicon){
+                super.onPageStarted(view, url, favicon);
+                pDialog = ProgressDialog.show(view.getContext(), "",
+                        "Connecting to Venmo server", false);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                pDialog.dismiss();
+
+                if (url.contains("?access_token=") && authComplete != true) {
+                    Uri uri = Uri.parse(url);
+                    String authCode = uri.getQueryParameter("access_token");
+                    Log.i("", "~~~~~~~~~~TOKEN : " + authCode);
+                    authComplete = true;
+                    resultIntent.putExtra("code", authCode);
+                    //WebActivity.this.setResult(Activity.RESULT_OK, resultIntent);
+                    //resultIntent.putExtra("status", YouActivity.Status.SUCCESS.toString());
+                    //setResult(Activity.RESULT_CANCELED, resultIntent);
+                    finish();
+                }else if(url.contains("error=access_denied")){
+                    Log.i("", "ACCESS_DENIED_HERE");
+                    //resultIntent.putExtra("code", authCode);
+                    //resultIntent.putExtra("status", WebActivity.Status.ACCESS_DENIED.toString());
+                    authComplete = true;
+                    //setResult(Activity.RESULT_CANCELED, resultIntent);
+                    finish();
+                }
+            }
+        });
+        myWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; U; Android 2.0; en-us; Droid Build/ESD20) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
+        myWebView.loadUrl("https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile");
+        */
+        String destination = "xyz.skylar.justthetip.URL";
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.putExtra(destination, "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile");
+        startActivityForResult(intent, 1);
     }
 
 }
