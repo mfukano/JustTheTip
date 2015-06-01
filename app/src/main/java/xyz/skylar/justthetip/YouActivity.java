@@ -1,9 +1,12 @@
 package xyz.skylar.justthetip;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class YouActivity extends ActionBarActivity {
@@ -36,7 +39,10 @@ public class YouActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    void login(){
-
+    public void loginVenmo(View v){
+        String url = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }

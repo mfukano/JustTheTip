@@ -2,7 +2,6 @@ package xyz.skylar.justthetip;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -19,8 +18,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import xyz.skylar.justthetip.SlidingTabsLayout;
 
 /**
  * Created by Skylar on 5/28/2015.
@@ -168,6 +165,10 @@ public class SlidingTabsFragment  extends Fragment {
 
                     return view;
                 case "you":
+                    view = getActivity().getLayoutInflater().inflate(R.layout.activity_you,
+                            container, false);
+                    container.addView(view);
+                    return view;
                 default:
                     // Inflate a new layout from our resources
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
