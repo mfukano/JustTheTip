@@ -1,19 +1,24 @@
 package xyz.skylar.justthetip;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import xyz.skylar.justthetip.SlidingTabsLayout;
 
@@ -126,43 +131,85 @@ public class SlidingTabsFragment  extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             // if on the 'tag' tab (QR code stuff)
-            if (getPageTitle(position) == "tag") {
-                View view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
-                        container, false);
-                container.addView(view);
+            View view;
+            String currPage = getPageTitle(position).toString();
+            switch (currPage) {
+                case "tag":
+                    view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
+                            container, false);
+                    container.addView(view);
 
-                ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
+                    ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
-                // hard-coded for now; will be venmo/paypal info
-                String qr_data = "Ryan-Gliever";
-                int qr_dimension = 500;
+                    // hard-coded for now; will be venmo/paypal info
+                    String qr_data = "Ryan-Gliever";
+                    int qr_dimension = 500;
 
-                QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
-                        BarcodeFormat.QR_CODE.toString(), qr_dimension);
+                    QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
+                            BarcodeFormat.QR_CODE.toString(), qr_dimension);
 
-                // create and display the QR bitmap
-                try {
-                    Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
-                    qrImage.setImageBitmap(qr_bitmap);
-                } catch (WriterException e) {
-                    e.printStackTrace();
+                    // create and display the QR bitmap
+                    try {
+                        Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
+                        qrImage.setImageBitmap(qr_bitmap);
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+                    return view;
+
+                case "tip":
+                    view = getActivity().getLayoutInflater().inflate(R.layout.tip,
+                            container, false);
+                    container.addView(view);
+
+                    Button qrScanButton = (Button) view.findViewById(R.id.button);
+                    qrScanButton.setOnClickListener (ScanListener);
+
+                    return view;
+                case "you":
+                default:
+                    // Inflate a new layout from our resources
+                    view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
+                            container, false);
+                    // Add the newly created View to the ViewPager
+                    container.addView(view);
+
+                    // Retrieve a TextView from the inflated View, and update it's text
+                    TextView title = (TextView) view.findViewById(R.id.item_title);
+                    title.setText(String.valueOf(position + 1));
+
+                    // Return the View
+                    return view;
+            }
+        }
+
+        // listener for the qr scan button
+        View.OnClickListener ScanListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentIntegrator integrator = new IntentIntegrator(SlidingTabsFragment.this.getActivity());
+                integrator.addExtra("SCAN_WIDTH", 500);
+                integrator.addExtra("SCAN_HEIGHT", 500);
+                integrator.addExtra("SCAN_MODE", "QR_CODE_MODE,PRODUCT_MODE");
+                //customize the prompt message before scanning
+                integrator.addExtra("PROMPT_MESSAGE", "Scanner Start!");
+                integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
+            }
+        };
+
+        // do stuff with the return result from the qr scan
+        public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            if (result != null) {
+                String contents = result.getContents();
+                if (contents != null) {
+                    //showDialog(R.string.result_succeeded, result.toString());
+                    Log.i("Success!", result.toString());
+                } else {
+                    //showDialog(R.string.result_failed, getString(R.string.result_failed_why));
+                    Log.i("Failed.", "no result to show");
                 }
-
-                return view;
-
-            } else {
-                // Inflate a new layout from our resources
-                View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                        container, false);
-                // Add the newly created View to the ViewPager
-                container.addView(view);
-
-                // Retrieve a TextView from the inflated View, and update it's text
-                TextView title = (TextView) view.findViewById(R.id.item_title);
-                title.setText(String.valueOf(position + 1));
-
-                // Return the View
-                return view;
             }
         }
 
