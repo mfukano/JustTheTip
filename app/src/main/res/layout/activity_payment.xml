@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/sample_main_layout">
+
+    <FrameLayout
+        android:id="@+id/sample_content_fragment"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0px" >
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="order total"
+        android:id="@+id/totalText"
+        android:layout_above="@+id/totalInput"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/totalInput"
+        android:gravity="center"
+        android:text="total goes in"
+        android:layout_marginBottom="65dp"
+        android:layout_above="@+id/LinearLayout02"
+        android:layout_alignLeft="@+id/editText2"
+        android:layout_alignStart="@+id/editText2" />
+
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="false"
+        android:baselineAligned="false"
+        android:layout_alignParentTop="false"
+        android:layout_above="@+id/seekBar"
+        android:layout_alignWithParentIfMissing="false">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10%"
+            android:id="@+id/ten"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15%"
+            android:id="@+id/fifteen"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="18%"
+            android:id="@+id/eighteen"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="balls deep"
+            android:id="@+id/custom"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"/>
+    </LinearLayout>
+
+    <SeekBar
+        android:layout_width="201dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:max="20"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/tipTracker"
+        android:layout_below="@+id/seekBar"
+        android:layout_centerHorizontal="true"
+        android:text="%%%%%%%%%" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="tip total"
+        android:id="@+id/tipHeader"
+        android:layout_above="@+id/editText2"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/tipOut"
+        android:gravity="center"
+        android:text="tip comes out"
+        android:clickable="false"
+        android:layout_marginBottom="95dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

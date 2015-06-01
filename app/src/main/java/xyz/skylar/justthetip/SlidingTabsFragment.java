@@ -22,7 +22,7 @@ import com.google.zxing.integration.android.IntentResult;
 /**
  * Created by Skylar on 5/28/2015.
  */
-public class SlidingTabsFragment  extends Fragment {
+public class SlidingTabsFragment extends Fragment {
 
     static final String LOG_TAG = "SlidingTabsFragment";
 
