@@ -34,6 +34,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
  * {@link android.support.v4.app.Fragment} which can display a view.
@@ -95,20 +98,18 @@ public class MainActivity extends ActivityBase {
         }*/
         return super.onOptionsItemSelected(item);
     }
+
+    /*
+    // do stuff with qr scan return result
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == 1) {
-            if(resultCode == RESULT_OK){
-                String result=data.getStringExtra("code");
-                Log.i("","~~~Token:" + result);
-                TextView token = (TextView) findViewById(R.id.textView4);
-                token.setText(result);
-            }
-            if (resultCode == RESULT_CANCELED) {
-                Log.i("","~~~No token");
-            }
-        }
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        Log.i ("Main", "onActivityResult");
+        Log.i ("requestCode", Integer.toString(requestCode));
+        Log.i ("resultCode", Integer.toString(resultCode));
+
+        super.onActivityResult(requestCode, resultCode, intent);
     }
+    */
     private String getIntentMessage(String s) {
         Intent intent = getIntent();
         return intent.getStringExtra(s);

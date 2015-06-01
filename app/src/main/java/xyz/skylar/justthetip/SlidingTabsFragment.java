@@ -37,6 +37,21 @@ public class SlidingTabsFragment extends Fragment {
      */
     private ViewPager mViewPager;
 
+
+    public final class FragmentIntegrator extends IntentIntegrator {
+        private final Fragment fragment;
+
+        public FragmentIntegrator(Fragment fragment) {
+            super(fragment.getActivity());
+            this.fragment = fragment;
+        }
+
+        @Override
+        protected void startActivityForResult(Intent intent, int code) {
+            fragment.startActivityForResult(intent, code);
+        }
+    }
+
     /**
      * Inflates the {@link View} which will be displayed by this {@link Fragment}, from the app's
      * resources.
@@ -164,6 +179,7 @@ public class SlidingTabsFragment extends Fragment {
                     qrScanButton.setOnClickListener (ScanListener);
 
                     return view;
+
                 case "you":
                     view = getActivity().getLayoutInflater().inflate(R.layout.activity_you,
                             container, false);
@@ -189,30 +205,10 @@ public class SlidingTabsFragment extends Fragment {
         View.OnClickListener ScanListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentIntegrator integrator = new IntentIntegrator(SlidingTabsFragment.this.getActivity());
-                integrator.addExtra("SCAN_WIDTH", 500);
-                integrator.addExtra("SCAN_HEIGHT", 500);
-                integrator.addExtra("SCAN_MODE", "QR_CODE_MODE,PRODUCT_MODE");
-                //customize the prompt message before scanning
-                integrator.addExtra("PROMPT_MESSAGE", "Scanner Start!");
-                integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
+                FragmentIntegrator integrator = new FragmentIntegrator(SlidingTabsFragment.this);
+                integrator.initiateScan();
             }
         };
-
-        // do stuff with the return result from the qr scan
-        public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-            if (result != null) {
-                String contents = result.getContents();
-                if (contents != null) {
-                    //showDialog(R.string.result_succeeded, result.toString());
-                    Log.i("Success!", result.toString());
-                } else {
-                    //showDialog(R.string.result_failed, getString(R.string.result_failed_why));
-                    Log.i("Failed.", "no result to show");
-                }
-            }
-        }
 
         /**
          * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
@@ -224,4 +220,21 @@ public class SlidingTabsFragment extends Fragment {
         }
 
     }
+
+    // do stuff with the return result from the qr scan
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                Log.i("Success!", contents.toString());
+                TextView tv = (TextView) getView().findViewById(R.id.qrResult);
+                tv.setText(contents.toString());
+            } else {
+                Log.i("Failed.", "no result to show");
+            }
+        }
+    }
+
 }
