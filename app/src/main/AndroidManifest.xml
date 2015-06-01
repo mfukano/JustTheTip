@@ -14,10 +14,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".VenmoWebViewActivity"
-            android:label="Venmo View">
-
-        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
