@@ -37,7 +37,7 @@ public class SlidingTabsFragment extends Fragment {
      */
     private ViewPager mViewPager;
 
-
+    // this makes it so we can display the return result of the QR scan in the fragment
     public final class FragmentIntegrator extends IntentIntegrator {
         private final Fragment fragment;
 
@@ -220,6 +220,7 @@ public class SlidingTabsFragment extends Fragment {
         }
 
     }
+
 
     // do stuff with the return result from the qr scan
     @Override

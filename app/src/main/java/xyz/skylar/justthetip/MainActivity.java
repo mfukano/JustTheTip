@@ -99,17 +99,21 @@ public class MainActivity extends ActivityBase {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-    // do stuff with qr scan return result
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
-        Log.i ("Main", "onActivityResult");
-        Log.i ("requestCode", Integer.toString(requestCode));
-        Log.i ("resultCode", Integer.toString(resultCode));
-
-        super.onActivityResult(requestCode, resultCode, intent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                String result = data.getStringExtra("code");
+                Log.i("", "~~~Token:" + result);
+                TextView token = (TextView) findViewById(R.id.textView4);
+                token.setText(result);
+            }
+            if (resultCode == RESULT_CANCELED) {
+                Log.i("", "~~~No token");
+            }
+        }
     }
-    */
+
     private String getIntentMessage(String s) {
         Intent intent = getIntent();
         return intent.getStringExtra(s);
