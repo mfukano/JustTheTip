@@ -165,6 +165,10 @@ public class SlidingTabsFragment extends Fragment {
 
                     return view;
                 case "you":
+                    view = getActivity().getLayoutInflater().inflate(R.layout.activity_you,
+                            container, false);
+                    container.addView(view);
+                    return view;
                 default:
                     // Inflate a new layout from our resources
                     view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,

@@ -18,10 +18,13 @@
 package xyz.skylar.justthetip;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
@@ -83,6 +86,11 @@ public class MainActivity extends ActivityBase {
         }*/
         return super.onOptionsItemSelected(item);
     }
-
+    public void loginVenmo(View v){
+        String url = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
 
 }
