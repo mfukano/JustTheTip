@@ -67,15 +67,7 @@ public class YouActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(getIntentMessage("code") != null){
-            Log.i("","token found: "+ getIntentMessage("code"));
-        }else{
-            Log.i("","no token passed");
-        }
-    }
+
     private String getIntentMessage(String s) {
         Intent intent = getIntent();
         return intent.getStringExtra(s);
