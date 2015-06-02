@@ -19,6 +19,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Skylar on 5/28/2015.
  */
@@ -152,6 +154,9 @@ public class SlidingTabsFragment extends Fragment {
                             container, false);
                     container.addView(view);
 
+                    TextView tv = (TextView) view.findViewById(R.id.textView);
+                    tv.setText(MainActivity.authCode);
+
                     ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
                     // hard-coded for now; will be venmo/paypal info
@@ -177,7 +182,7 @@ public class SlidingTabsFragment extends Fragment {
                     container.addView(view);
 
                     Button qrScanButton = (Button) view.findViewById(R.id.button);
-                    qrScanButton.setOnClickListener (ScanListener);
+                    qrScanButton.setOnClickListener(ScanListener);
 
                     Button newTip = (Button) view.findViewById(R.id.newTip);
                     newTip.setOnClickListener(new View.OnClickListener() {
