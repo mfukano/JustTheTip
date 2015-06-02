@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profilePic"
+        android:layout_gravity="center"
+        android:layout_weight="0.25"
+        android:layout_marginTop="50dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,12 +27,4 @@
         android:layout_gravity="center"
         android:layout_weight="0.5" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="use it to receive tips or participate in a tip"
-        android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.25"
-        android:gravity="center" />
 </LinearLayout>
