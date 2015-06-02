@@ -4,11 +4,24 @@
     android:layout_height="match_parent">
 
     <Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="New "
+    android:id="@+id/newTip"
+    android:gravity="center"
+    android:layout_weight="0.5"
+    android:layout_above="@+id/button"
+    android:layout_marginBottom="30dp"
+        android:layout_marginTop="100dp"/>
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="click to scan a QR code"
         android:id="@+id/button"
         android:gravity="center"
+        android:layout_weight="0.5"
         android:layout_gravity="center"
-        android:layout_marginTop="200dp" />
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="100dp"/>
 </LinearLayout>

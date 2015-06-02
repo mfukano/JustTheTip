@@ -17,10 +17,10 @@
 
 package xyz.skylar.justthetip;
 
+import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -28,10 +28,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -46,18 +45,21 @@ public class MainActivity extends ActivityBase {
     ProgressDialog pDialog;
     public static final String TAG = "MainActivity";
     private Context context;
+    Button newTip;
 
     // Whether the Log Fragment is currently shown
     private boolean mLogShown;
+    FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context = this;
+        fm = getSupportFragmentManager();
 
         if (savedInstanceState == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = fm.beginTransaction();
             SlidingTabsFragment fragment = new SlidingTabsFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();

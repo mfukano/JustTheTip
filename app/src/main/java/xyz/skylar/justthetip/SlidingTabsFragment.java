@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -37,6 +38,8 @@ public class SlidingTabsFragment extends Fragment {
      */
     private ViewPager mViewPager;
 
+
+    LinearLayout linearLayout;
     /**
      * Inflates the {@link View} which will be displayed by this {@link Fragment}, from the app's
      * resources.
@@ -71,6 +74,7 @@ public class SlidingTabsFragment extends Fragment {
         mSlidingTabLayout = (SlidingTabsLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
         // END_INCLUDE (setup_slidingtablayout)
+        linearLayout = (LinearLayout) view.findViewById(R.id.sample_main_layout);
     }
     // END_INCLUDE (fragment_onviewcreated)
 
@@ -162,6 +166,16 @@ public class SlidingTabsFragment extends Fragment {
 
                     Button qrScanButton = (Button) view.findViewById(R.id.button);
                     qrScanButton.setOnClickListener (ScanListener);
+
+                    Button newTip = (Button) view.findViewById(R.id.newTip);
+                    newTip.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v){
+                            Intent intent = new Intent(getActivity(), PayConfigActivity.class);
+                            startActivity(intent);
+                    }
+
+                });
 
                     return view;
                 case "you":
