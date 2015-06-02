@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -38,8 +37,21 @@ public class SlidingTabsFragment extends Fragment {
      */
     private ViewPager mViewPager;
 
+    // this makes it so we can display the return result of the QR scan in the fragment
+    public final class FragmentIntegrator extends IntentIntegrator {
+        private final Fragment fragment;
 
-    LinearLayout linearLayout;
+        public FragmentIntegrator(Fragment fragment) {
+            super(fragment.getActivity());
+            this.fragment = fragment;
+        }
+
+        @Override
+        protected void startActivityForResult(Intent intent, int code) {
+            fragment.startActivityForResult(intent, code);
+        }
+    }
+
     /**
      * Inflates the {@link View} which will be displayed by this {@link Fragment}, from the app's
      * resources.
@@ -66,6 +78,7 @@ public class SlidingTabsFragment extends Fragment {
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mViewPager.setAdapter(new SamplePagerAdapter());
+        mViewPager.setCurrentItem(1);
         // END_INCLUDE (setup_viewpager)
 
         // BEGIN_INCLUDE (setup_slidingtablayout)
@@ -74,7 +87,6 @@ public class SlidingTabsFragment extends Fragment {
         mSlidingTabLayout = (SlidingTabsLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setViewPager(mViewPager);
         // END_INCLUDE (setup_slidingtablayout)
-        linearLayout = (LinearLayout) view.findViewById(R.id.sample_main_layout);
     }
     // END_INCLUDE (fragment_onviewcreated)
 
@@ -178,6 +190,7 @@ public class SlidingTabsFragment extends Fragment {
                 });
 
                     return view;
+
                 case "you":
                     view = getActivity().getLayoutInflater().inflate(R.layout.activity_you,
                             container, false);
@@ -203,30 +216,10 @@ public class SlidingTabsFragment extends Fragment {
         View.OnClickListener ScanListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentIntegrator integrator = new IntentIntegrator(SlidingTabsFragment.this.getActivity());
-                integrator.addExtra("SCAN_WIDTH", 500);
-                integrator.addExtra("SCAN_HEIGHT", 500);
-                integrator.addExtra("SCAN_MODE", "QR_CODE_MODE,PRODUCT_MODE");
-                //customize the prompt message before scanning
-                integrator.addExtra("PROMPT_MESSAGE", "Scanner Start!");
-                integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
+                FragmentIntegrator integrator = new FragmentIntegrator(SlidingTabsFragment.this);
+                integrator.initiateScan();
             }
         };
-
-        // do stuff with the return result from the qr scan
-        public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-            if (result != null) {
-                String contents = result.getContents();
-                if (contents != null) {
-                    //showDialog(R.string.result_succeeded, result.toString());
-                    Log.i("Success!", result.toString());
-                } else {
-                    //showDialog(R.string.result_failed, getString(R.string.result_failed_why));
-                    Log.i("Failed.", "no result to show");
-                }
-            }
-        }
 
         /**
          * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
@@ -238,4 +231,22 @@ public class SlidingTabsFragment extends Fragment {
         }
 
     }
+
+
+    // do stuff with the return result from the qr scan
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                Log.i("Success!", contents.toString());
+                TextView tv = (TextView) getView().findViewById(R.id.qrResult);
+                tv.setText(contents.toString());
+            } else {
+                Log.i("Failed.", "no result to show");
+            }
+        }
+    }
+
 }

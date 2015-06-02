@@ -24,4 +24,13 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="100dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This will display the result after scanning."
+        android:id="@+id/qrResult"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:gravity="center" />
 </LinearLayout>
