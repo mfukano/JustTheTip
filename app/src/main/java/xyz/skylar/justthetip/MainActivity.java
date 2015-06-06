@@ -58,7 +58,7 @@ import java.io.Reader;
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
 public class MainActivity extends ActivityBase {
-    private static final String AUTH_URL = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile%20access_email%20access_phone";
+    private static final String AUTH_URL = "https://api.venmo.com/v1/oauth/authorize?client_id=2668&scope=make_payments%20access_profile%20access_email%20access_phone";
 
     WebView myWebView;
     ProgressDialog pDialog;
