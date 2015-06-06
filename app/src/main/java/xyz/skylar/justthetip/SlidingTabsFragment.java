@@ -157,10 +157,11 @@ public class SlidingTabsFragment extends Fragment {
                     ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
                     ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
-                    if (MainActivity.authCode != null && GetMyInfo.userJSON != null) {
+                    if (MainActivity.authCode != null && GetMyInfo.userInfo != null) {
 
-                        String qr_data = GetMyInfo.userJSON;
+                        String qr_data = GetMyInfo.userInfo;
                         int qr_dimension = 500;
+                        Log.i ("QR DATA", qr_data);
 
                         QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
                                 BarcodeFormat.QR_CODE.toString(), qr_dimension);

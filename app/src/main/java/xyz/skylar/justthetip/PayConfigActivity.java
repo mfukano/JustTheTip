@@ -21,6 +21,9 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.math.BigDecimal;
 
 /**
@@ -232,10 +235,17 @@ public class PayConfigActivity extends ActivityBase {
             if (contents != null) {
                 Log.i("Success!", contents.toString());
                 // set recipient
-                recipient = "Jake from statefart";
-                AlertDialog alertDialog = createDialog(recipient);
-                alertDialog.show();
-                
+                String recipient = null;
+                try {
+                    JSONObject userInfoJSON = new JSONObject(contents);
+                    recipient = userInfoJSON.getString("display_name");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (recipient!=null) {
+                    AlertDialog alertDialog = createDialog(recipient);
+                    alertDialog.show();
+                }
             } else {
                 Log.i("Failed.", "no result to show");
             }

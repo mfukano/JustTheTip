@@ -31,7 +31,7 @@ import java.net.URL;
 public class GetMyInfo extends AsyncTask<String, Void, String> {
 
     // complete raw json for QR code (?) along with some json params
-    public static String userJSON, USERNAME, DISPLAY_NAME,
+    public static String userJSON, userInfo, USERNAME, DISPLAY_NAME,
                          EMAIL, PHONE = null;
     public static Bitmap PICTURE = null;
 
@@ -64,6 +64,19 @@ public class GetMyInfo extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            // create a smaller json object w/ necessary user info
+            JSONObject userInfoJSON = new JSONObject();
+            try {
+                userInfoJSON.put("username", USERNAME);
+                userInfoJSON.put("display_name", DISPLAY_NAME);
+                userInfoJSON.put("phone", PHONE);
+                userInfoJSON.put("email", EMAIL);
+                userInfoJSON.put("pic_url", picture_url);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            userInfo = userInfoJSON.toString();
 
         } catch (JSONException e) {
             e.printStackTrace();
