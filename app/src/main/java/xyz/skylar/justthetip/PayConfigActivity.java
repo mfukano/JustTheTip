@@ -1,7 +1,13 @@
 package xyz.skylar.justthetip;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -11,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.math.BigDecimal;
 
@@ -26,6 +35,8 @@ public class PayConfigActivity extends ActivityBase {
     StringBuilder sb;
     Context context;
     Toast toast;
+    PaymentDialog paymentDialog;
+    String recipient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +113,11 @@ public class PayConfigActivity extends ActivityBase {
         });
 
         seek.setOnSeekBarChangeListener(customSeekBarListener);
+
+        Button sendButton = (Button) findViewById(R.id.sendButton);
+        sendButton.setOnClickListener(SendListener);
+
+        PaymentDialog paymentDialog = new PaymentDialog();
     }
 
 
@@ -156,5 +172,72 @@ public class PayConfigActivity extends ActivityBase {
             toast.cancel();
         toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    // dialog class for pop up message after scan
+    public static class PaymentDialog extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Send payment to ... ?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // send money w/ api call
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // return to pay config
+                        }
+                    });
+            return builder.create();
+        }
+    }
+
+    public AlertDialog createDialog (String recipient) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Send payment to " + recipient + "?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // send money w/ api call
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // return to pay config
+                    }
+                });
+        return builder.create();
+    }
+
+    // send button -- initiates QR code scan to send money
+    View.OnClickListener SendListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            IntentIntegrator integrator = new IntentIntegrator(PayConfigActivity.this);
+            integrator.initiateScan();
+        }
+    };
+
+    // result from the QR code scan above
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                Log.i("Success!", contents.toString());
+                // set recipient
+                recipient = "Jake from statefart";
+                AlertDialog alertDialog = createDialog(recipient);
+                alertDialog.show();
+            } else {
+                Log.i("Failed.", "no result to show");
+            }
+        }
     }
 }
