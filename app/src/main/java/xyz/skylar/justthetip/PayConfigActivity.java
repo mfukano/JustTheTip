@@ -2,7 +2,6 @@ package xyz.skylar.justthetip;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +25,7 @@ public class PayConfigActivity extends ActivityBase {
     LinearLayout ll;
     StringBuilder sb;
     Context context;
+    Toast toast;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,8 +56,7 @@ public class PayConfigActivity extends ActivityBase {
             tenPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
-                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
-                        Log.i("brrbrr", "IT'S BROKN");
+                        displayToast("I need a total!");
                     } else {
                         seek.setProgress(seek.getMax() - 20);
                     }
@@ -66,7 +65,7 @@ public class PayConfigActivity extends ActivityBase {
             fifPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
-                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                        displayToast("I need a total!");
                     } else {
                         seek.setProgress(seek.getMax() - 15);
                     }
@@ -75,7 +74,7 @@ public class PayConfigActivity extends ActivityBase {
             eigPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
-                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                        displayToast("I need a total!");
                     } else {
                         seek.setProgress(seek.getMax() - 12);
                     }
@@ -84,7 +83,7 @@ public class PayConfigActivity extends ActivityBase {
             full.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
-                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                        displayToast("I need a total!");
                     } else {
                         seek.setProgress(seek.getMax());
                     }
@@ -109,16 +108,19 @@ public class PayConfigActivity extends ActivityBase {
     private SeekBar.OnSeekBarChangeListener customSeekBarListener =
         new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seek, int progress, boolean fromUsr){
-                progress = progress+10;
-                String str = Integer.toString(progress);
-                sb = new StringBuilder();
-                sb.append(str);
-                sb.append("%");
-                tipStr.setText(sb.toString());
-                setTipTotal(str);
+            public void onProgressChanged(SeekBar seek, int progress, boolean fromUsr) {
+                if (total.getText().toString().matches("")) {
+                    displayToast("Buddy, you can't move the slider if you don't have a total.");
+                } else {
+                    progress = progress + 10;
+                    String str = Integer.toString(progress);
+                    sb = new StringBuilder();
+                    sb.append(str);
+                    sb.append("%");
+                    tipStr.setText(sb.toString());
+                    setTipTotal(str);
+                }
             }
-
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
 
@@ -147,5 +149,12 @@ public class PayConfigActivity extends ActivityBase {
         BigDecimal bd = new BigDecimal(Float.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.floatValue();
+    }
+
+    public void displayToast(String message) {
+        if(toast != null)
+            toast.cancel();
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
