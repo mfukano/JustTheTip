@@ -153,7 +153,7 @@ public class SlidingTabsLayout extends HorizontalScrollView {
         TextView textView = new TextView(context);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
+        textView.setTypeface(Typeface.DEFAULT);
         textView.setWidth(size.x / 3);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -165,10 +165,12 @@ public class SlidingTabsLayout extends HorizontalScrollView {
             textView.setBackgroundResource(outValue.resourceId);
         }
 
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             // If we're running on ICS or newer, enable all-caps to match the Action Bar tab style
             textView.setAllCaps(true);
         }
+        */
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
         textView.setPadding(padding, padding/3, padding, padding/3);
