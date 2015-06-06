@@ -19,6 +19,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Skylar on 5/28/2015.
  */
@@ -151,22 +153,31 @@ public class SlidingTabsFragment extends Fragment {
                     view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
                             container, false);
                     container.addView(view);
-
+                    TextView tv = (TextView) view.findViewById(R.id.textView);
+                    ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
                     ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
 
-                    // hard-coded for now; will be venmo/paypal info
-                    String qr_data = "Ryan-Gliever";
-                    int qr_dimension = 500;
+                    if (MainActivity.authCode != null && GetMyInfo.userJSON != null) {
 
-                    QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
-                            BarcodeFormat.QR_CODE.toString(), qr_dimension);
+                        String qr_data = GetMyInfo.userJSON;
+                        int qr_dimension = 500;
 
-                    // create and display the QR bitmap
-                    try {
-                        Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
-                        qrImage.setImageBitmap(qr_bitmap);
-                    } catch (WriterException e) {
-                        e.printStackTrace();
+                        QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
+                                BarcodeFormat.QR_CODE.toString(), qr_dimension);
+
+                        // create and display the QR bitmap
+                        try {
+                            Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
+                            qrImage.setImageBitmap(qr_bitmap);
+                        } catch (WriterException e) {
+                            e.printStackTrace();
+                        }
+
+                        profilePic.setImageBitmap(GetMyInfo.PICTURE);
+                        tv.setText(GetMyInfo.DISPLAY_NAME);
+
+                    } else {
+                        tv.setText("Please log in to Venmo to get your QR code.");
                     }
 
                     return view;
@@ -177,7 +188,7 @@ public class SlidingTabsFragment extends Fragment {
                     container.addView(view);
 
                     Button qrScanButton = (Button) view.findViewById(R.id.button);
-                    qrScanButton.setOnClickListener (ScanListener);
+                    qrScanButton.setOnClickListener(ScanListener);
 
                     Button newTip = (Button) view.findViewById(R.id.newTip);
                     newTip.setOnClickListener(new View.OnClickListener() {

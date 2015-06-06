@@ -36,6 +36,20 @@ import android.widget.TextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.*;
+import org.apache.http.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
  * {@link android.support.v4.app.Fragment} which can display a view.
@@ -44,6 +58,8 @@ import com.google.zxing.integration.android.IntentResult;
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
 public class MainActivity extends ActivityBase {
+    private static final String AUTH_URL = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile%20access_email%20access_phone";
+
     WebView myWebView;
     ProgressDialog pDialog;
     public static final String TAG = "MainActivity";
@@ -53,6 +69,9 @@ public class MainActivity extends ActivityBase {
     // Whether the Log Fragment is currently shown
     private boolean mLogShown;
     FragmentManager fm;
+
+    // for making the api calls
+    public static String authCode = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,38 +88,7 @@ public class MainActivity extends ActivityBase {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        //MenuItem logToggle = menu.findItem(R.id.menu_toggle_log);
-        //logToggle.setVisible(findViewById(R.id.sample_output) instanceof ViewAnimator);
-        //logToggle.setTitle(mLogShown ? R.string.sample_hide_log : R.string.sample_show_log);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        /*switch(item.getItemId()) {
-            case R.id.menu_toggle_log:
-                mLogShown = !mLogShown;
-                ViewAnimator output = (ViewAnimator) findViewById(R.id.sample_output);
-                if (mLogShown) {
-                    output.setDisplayedChild(1);
-                } else {
-                    output.setDisplayedChild(0);
-                }
-                supportInvalidateOptionsMenu();
-                return true;
-        }*/
-        return super.onOptionsItemSelected(item);
-    }
-
+    // after logging into venmo, this is called
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -109,6 +97,9 @@ public class MainActivity extends ActivityBase {
                 Log.i("", "~~~Token:" + result);
                 TextView token = (TextView) findViewById(R.id.textView4);
                 token.setText(result);
+                authCode = result;
+                // calls AsyncTask class to make an API call
+                new GetMyInfo().execute(authCode);
             }
             if (resultCode == RESULT_CANCELED) {
                 Log.i("", "~~~No token");
@@ -133,57 +124,11 @@ public class MainActivity extends ActivityBase {
             return true;
         }
     }
+    //Launch webview for OAth login
     public void loginVenmo(View v){
-        /*String url = "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile";
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);*/
-        /*myWebView = (WebView) findViewById(R.id.webView);
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        myWebView.setWebChromeClient(new WebChromeClient());
-        myWebView.setWebViewClient(new WebViewClient() {
-
-            boolean authComplete = false;
-            Intent resultIntent = new Intent();
-
-            @Override public void onPageStarted(WebView view, String url, Bitmap favicon){
-                super.onPageStarted(view, url, favicon);
-                pDialog = ProgressDialog.show(view.getContext(), "",
-                        "Connecting to Venmo server", false);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                pDialog.dismiss();
-
-                if (url.contains("?access_token=") && authComplete != true) {
-                    Uri uri = Uri.parse(url);
-                    String authCode = uri.getQueryParameter("access_token");
-                    Log.i("", "~~~~~~~~~~TOKEN : " + authCode);
-                    authComplete = true;
-                    resultIntent.putExtra("code", authCode);
-                    //WebActivity.this.setResult(Activity.RESULT_OK, resultIntent);
-                    //resultIntent.putExtra("status", YouActivity.Status.SUCCESS.toString());
-                    //setResult(Activity.RESULT_CANCELED, resultIntent);
-                    finish();
-                }else if(url.contains("error=access_denied")){
-                    Log.i("", "ACCESS_DENIED_HERE");
-                    //resultIntent.putExtra("code", authCode);
-                    //resultIntent.putExtra("status", WebActivity.Status.ACCESS_DENIED.toString());
-                    authComplete = true;
-                    //setResult(Activity.RESULT_CANCELED, resultIntent);
-                    finish();
-                }
-            }
-        });
-        myWebView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; U; Android 2.0; en-us; Droid Build/ESD20) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17");
-        myWebView.loadUrl("https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile");
-        */
         String destination = "xyz.skylar.justthetip.URL";
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.putExtra(destination, "https://api.venmo.com/v1/oauth/authorize?client_id=2654&scope=make_payments%20access_profile");
+        intent.putExtra(destination, AUTH_URL);
         startActivityForResult(intent, 1);
     }
 
