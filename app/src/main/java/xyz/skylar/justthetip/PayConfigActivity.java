@@ -1,11 +1,19 @@
 package xyz.skylar.justthetip;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.math.BigDecimal;
 
 /**
  * Created by matfukano on 5/31/15.
@@ -14,54 +22,101 @@ public class PayConfigActivity extends ActivityBase {
     TextView tipStr;
     EditText total, tipCalc;
     SeekBar seek;
-    Button tenPerc, fifPerc, eigPerc;
+    Button tenPerc, fifPerc, eigPerc, full;
+    LinearLayout ll;
+    StringBuilder sb;
+    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_payment);
         seek = (SeekBar) findViewById(R.id.seekBar);
         tipStr = (TextView) findViewById(R.id.tipTracker);
         total = (EditText) findViewById(R.id.totalInput);
+        total.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(final View v, final MotionEvent event) {
+                ll.setVisibility(View.VISIBLE);
+                total.requestFocus();
+                return false;
+            }
+        });
+
         tipCalc = (EditText) findViewById(R.id.tipOut);
+        tipCalc.setFocusable(false);
         tenPerc = (Button) findViewById(R.id.ten);
-        tenPerc.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                seek.setProgress(seek.getMax() - 20);
-            }
-        });
-
         fifPerc = (Button) findViewById(R.id.fifteen);
-        fifPerc.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                seek.setProgress(seek.getMax() - 15);
-            }
-        });
-
         eigPerc = (Button) findViewById(R.id.eighteen);
-        eigPerc.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-                seek.setProgress(seek.getMax() + 12);
+        full = (Button) findViewById(R.id.custom);
+
+        /* switch for button pressing with a default to toast if total is null */
+
+            tenPerc.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (total.getText().toString().matches("")) {
+                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                        Log.i("brrbrr", "IT'S BROKN");
+                    } else {
+                        seek.setProgress(seek.getMax() - 20);
+                    }
+                }
+            });
+            fifPerc.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (total.getText().toString().matches("")) {
+                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        seek.setProgress(seek.getMax() - 15);
+                    }
+                }
+            });
+            eigPerc.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (total.getText().toString().matches("")) {
+                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        seek.setProgress(seek.getMax() - 12);
+                    }
+                }
+            });
+            full.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (total.getText().toString().matches("")) {
+                        Toast.makeText(context, "I need a total!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        seek.setProgress(seek.getMax());
+                    }
+                }
+            });
+
+
+        ll = (LinearLayout) findViewById(R.id.keyboard_overlay);
+        ll.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(total.getWindowToken(), 0);
+                ll.setVisibility(View.GONE);
+                total.clearFocus();
             }
         });
 
         seek.setOnSeekBarChangeListener(customSeekBarListener);
     }
 
- /*   @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        fragmentView = inflater.inflate(R.layout.activity_payment, container, false);
-        return fragmentView;
-    }
-*/
+
     private SeekBar.OnSeekBarChangeListener customSeekBarListener =
         new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seek, int progress, boolean fromUsr){
-                setTipTotal(progress);
+                progress = progress+10;
+                String str = Integer.toString(progress);
+                sb = new StringBuilder();
+                sb.append(str);
+                sb.append("%");
+                tipStr.setText(sb.toString());
+                setTipTotal(str);
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -71,12 +126,26 @@ public class PayConfigActivity extends ActivityBase {
             }
 
         };
-
-    public void setTipTotal(int progress){
-        progress = progress + 10;
-        float prc = progress / 100;
+    /*
+        Method to construct the value placed in the second edit text below "tip total"
+     */
+    public void setTipTotal(String str){
+        float p = Float.parseFloat(str);
+        float prc = p / 100;
         float ttl = Float.parseFloat(total.getText().toString());
         ttl = ttl * prc;
-        tipCalc.setText(Float.toString(ttl));
+
+        float total;
+        total = round(ttl, 2);
+        tipCalc.setText(Float.toString(total));
+    }
+
+    /*
+        Rounding helper method to clean up the float.
+     */
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
     }
 }
