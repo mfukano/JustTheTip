@@ -235,6 +235,7 @@ public class PayConfigActivity extends ActivityBase {
                 recipient = "Jake from statefart";
                 AlertDialog alertDialog = createDialog(recipient);
                 alertDialog.show();
+                
             } else {
                 Log.i("Failed.", "no result to show");
             }
