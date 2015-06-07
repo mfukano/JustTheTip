@@ -1,5 +1,6 @@
 package xyz.skylar.justthetip;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -19,14 +20,17 @@ import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by Skylar on 5/28/2015.
  */
 public class SlidingTabsFragment extends Fragment {
 
     static final String LOG_TAG = "SlidingTabsFragment";
+
+    static final int NO_SPLIT_REQUEST = 2;
+    static final int SPLIT_REQUEST = 3;
+
+    Context context;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -46,6 +50,7 @@ public class SlidingTabsFragment extends Fragment {
         public FragmentIntegrator(Fragment fragment) {
             super(fragment.getActivity());
             this.fragment = fragment;
+            context = fragment.getActivity().getApplicationContext();
         }
 
         @Override
@@ -188,18 +193,12 @@ public class SlidingTabsFragment extends Fragment {
                             container, false);
                     container.addView(view);
 
+                    /*
                     Button qrScanButton = (Button) view.findViewById(R.id.button);
-                    qrScanButton.setOnClickListener(ScanListener);
+                    qrScanButton.setOnClickListener(ScanListener);*/
 
                     Button newTip = (Button) view.findViewById(R.id.newTip);
-                    newTip.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v){
-                            Intent intent = new Intent(getActivity(), PayConfigActivity.class);
-                            startActivity(intent);
-                    }
-
-                });
+                    newTip.setOnClickListener(tipForResult);
 
                     return view;
 
@@ -233,6 +232,14 @@ public class SlidingTabsFragment extends Fragment {
             }
         };
 
+         View.OnClickListener tipForResult = new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, PayConfigActivity.class);
+                startActivityForResult(intent, NO_SPLIT_REQUEST);
+            }
+        };
+
         /**
          * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
          * {@link View}.
@@ -249,14 +256,49 @@ public class SlidingTabsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (result != null) {
-            String contents = result.getContents();
-            if (contents != null) {
-                Log.i("Success!", contents.toString());
-                TextView tv = (TextView) getView().findViewById(R.id.qrResult);
-                tv.setText(contents.toString());
+        if (result != null) {/*
+            if (requestCode == 2) {
+                if (resultCode == RESULT_OK) {
+                    String result = data.getStringExtra("code");
+                    Log.i("", "~~~Token:" + result);
+                    // Find button
+                    // Set button to not hidden / active
+                    // Set button text to 'restore split'
+                    // Set button to restore proper value
+                    TextView token = (TextView) findViewById(R.id.button);
+                    token.setText(result);
+                    authCode = result;
+                    // calls AsyncTask class to make an API call
+                    new GetMyInfo().execute(authCode);
+                }
+                if (resultCode == RESULT_CANCELED) {
+                    Log.i("", "~~~No token");
+                }
+            } else if (requestCode == 3) {
+                if (resultCode == RESULT_OK) {
+                    String result = data.getStringExtra("code");
+                    Log.i("", "~~~Token:" + result);
+                    // Find button
+                    // Set button to not hidden / active
+                    // Set button text to 'restore split'
+                    // Set button to restore proper value
+                    TextView token = (TextView) findViewById(R.id.button);
+                    token.setText(result);
+                    authCode = result;
+                    // calls AsyncTask class to make an API call
+                    new GetMyInfo().execute(authCode);
+                }
+                if (resultCode == RESULT_CANCELED) {
+                    Log.i("", "~~~No token");
+                }*/
             } else {
-                Log.i("Failed.", "no result to show");
+                String contents = result.getContents();
+                if (contents != null) {
+                    Log.i("Success!", contents.toString());
+                    TextView tv = (TextView) getView().findViewById(R.id.qrResult);
+                    tv.setText(contents.toString());
+                } else {
+                    Log.i("Failed.", "no result to show");
             }
         }
     }

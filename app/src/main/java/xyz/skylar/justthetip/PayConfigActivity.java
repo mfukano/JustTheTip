@@ -1,8 +1,6 @@
 package xyz.skylar.justthetip;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 /**
  * Created by matfukano on 5/31/15.
@@ -43,6 +40,16 @@ public class PayConfigActivity extends ActivityBase {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null){
+            String totIn = savedInstanceState.getString("tot_IN");
+            int seekProg = savedInstanceState.getInt("seek_prog");
+            int tipPerc = savedInstanceState.getInt("tip_PRC");
+            String tipOut = savedInstanceState.getString("tip_OUT");
+            total.setText(totIn);
+            seek.setProgress(seekProg);
+            tipStr.setText(tipPerc);
+            tipCalc.setText(tipOut);
+        }
         context = this;
         setContentView(R.layout.activity_payment);
         seek = (SeekBar) findViewById(R.id.seekBar);
@@ -118,6 +125,9 @@ public class PayConfigActivity extends ActivityBase {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(SendListener);
+
+        Button saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(SaveListener);
     }
 
 
@@ -208,6 +218,56 @@ public class PayConfigActivity extends ActivityBase {
             }
         }
     };
+
+    // save button -- sends result to slidingTabsFragment for restore intent
+    View.OnClickListener SaveListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View view){
+            Intent resultIntent = new Intent();
+            setResult(2, resultIntent);
+            finish();
+        }
+    };
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        String totIn = savedInstanceState.getString("tot_IN");
+        int seekProg = savedInstanceState.getInt("seek_prog");
+        int tipPerc = savedInstanceState.getInt("tip_PRC");
+        String tipOut = savedInstanceState.getString("tip_OUT");
+
+
+        if((seekProg < 10 || seekProg > 30) || totIn == null || tipPerc == 0 || tipOut == null){
+            // it's bullshit, there's no saved state
+        }else{
+            // restores saved stuff
+            total.setText(totIn);
+            seek.setProgress(seekProg);
+            tipStr.setText(tipPerc);
+            tipCalc.setText(tipOut);
+
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String totIn = total.getText().toString();
+        outState.putString("tot_IN", totIn);
+
+        int seekProg = seek.getProgress();
+        outState.putInt("seek_prog", seekProg);
+
+        String tipTrk = tipStr.getText().toString();
+        tipTrk = tipTrk.substring(0, tipStr.getText().toString().length()-1);
+        int tipPerc = Integer.parseInt(tipTrk);
+        outState.putInt("tip_PRC", tipPerc);
+
+        String tipOut = tipCalc.getText().toString();
+        outState.putString("tip_OUT", tipOut);
+    }
 
     // result from the QR code scan above
     @Override
