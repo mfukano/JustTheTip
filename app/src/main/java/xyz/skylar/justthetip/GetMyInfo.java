@@ -119,7 +119,7 @@ public class GetMyInfo extends AsyncTask<String, Void, String> {
 
     // just prints out the raw json right now
     public void onPostExecute (String result) {
-        Log.i (" ***JSON RESULT***", result);
+        //Log.i (" ***JSON RESULT***", result);
         userJSON = result;
     }
 }

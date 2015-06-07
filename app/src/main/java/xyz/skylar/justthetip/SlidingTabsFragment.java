@@ -193,12 +193,8 @@ public class SlidingTabsFragment extends Fragment {
                             container, false);
                     container.addView(view);
 
-                    /*
-                    Button qrScanButton = (Button) view.findViewById(R.id.button);
-                    qrScanButton.setOnClickListener(ScanListener);*/
-
                     Button newTip = (Button) view.findViewById(R.id.newTip);
-                    newTip.setOnClickListener(tipForResult);
+                    newTip.setOnClickListener(NewTipListener);
 
                     return view;
 
@@ -223,12 +219,15 @@ public class SlidingTabsFragment extends Fragment {
             }
         }
 
-        // listener for the qr scan button
-        View.OnClickListener ScanListener = new View.OnClickListener() {
+        View.OnClickListener NewTipListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentIntegrator integrator = new FragmentIntegrator(SlidingTabsFragment.this);
-                integrator.initiateScan();
+                if (MainActivity.authCode != null) {
+                    Intent intent = new Intent(getActivity(), PayConfigActivity.class);
+                    startActivity(intent);
+                } else {
+                    mViewPager.setCurrentItem(2);
+                }
             }
         };
 
