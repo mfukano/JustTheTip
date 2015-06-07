@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 /**
  * Created by matfukano on 5/31/15.
@@ -38,8 +39,6 @@ public class PayConfigActivity extends ActivityBase {
     StringBuilder sb;
     Context context;
     Toast toast;
-    PaymentDialog paymentDialog;
-    String recipient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,8 +118,6 @@ public class PayConfigActivity extends ActivityBase {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(SendListener);
-
-        PaymentDialog paymentDialog = new PaymentDialog();
     }
 
 
@@ -151,14 +148,13 @@ public class PayConfigActivity extends ActivityBase {
         Method to construct the value placed in the second edit text below "tip total"
      */
     public void setTipTotal(String str){
-        float p = Float.parseFloat(str);
-        float prc = p / 100;
-        float ttl = Float.parseFloat(total.getText().toString());
+        double p = Double.parseDouble(str);
+        double prc = p / 100;
+        double ttl = Double.parseDouble(total.getText().toString());
         ttl = ttl * prc;
 
-        float total;
-        total = round(ttl, 2);
-        tipCalc.setText(Float.toString(total));
+        String amt = String.format("%.2f", ttl);
+        tipCalc.setText(amt);
     }
 
     /*
@@ -177,31 +173,10 @@ public class PayConfigActivity extends ActivityBase {
         toast.show();
     }
 
-    // dialog class for pop up message after scan
-    public static class PaymentDialog extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Send payment to ... ?")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // send money w/ api call
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // return to pay config
-                        }
-                    });
-            return builder.create();
-        }
-    }
-
-    public AlertDialog createDialog (String recipient) {
+    // confirmation of payment dialog after QR scan
+    public AlertDialog createDialog (String recipient, String amount) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Send payment to " + recipient + "?")
+        builder.setMessage("Send " + amount + " to " + recipient + "?")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -221,8 +196,16 @@ public class PayConfigActivity extends ActivityBase {
     View.OnClickListener SendListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            IntentIntegrator integrator = new IntentIntegrator(PayConfigActivity.this);
-            integrator.initiateScan();
+            // make sure tip total is acceptable
+            if (!tipCalc.getText().toString().equals(null)
+                    && !tipCalc.getText().toString().equals("0")
+                    && !tipCalc.getText().toString().equals("tip comes out")) {
+                IntentIntegrator integrator = new IntentIntegrator(PayConfigActivity.this);
+                integrator.initiateScan();
+            } else {
+                Toast sendToast = Toast.makeText(context, "please enter a valid tip amount", Toast.LENGTH_SHORT);
+                sendToast.show();
+            }
         }
     };
 
@@ -236,6 +219,7 @@ public class PayConfigActivity extends ActivityBase {
                 Log.i("Success!", contents.toString());
                 // set recipient
                 String recipient = null;
+                String amount = tipCalc.getText().toString();
                 try {
                     JSONObject userInfoJSON = new JSONObject(contents);
                     recipient = userInfoJSON.getString("display_name");
@@ -243,7 +227,7 @@ public class PayConfigActivity extends ActivityBase {
                     e.printStackTrace();
                 }
                 if (recipient!=null) {
-                    AlertDialog alertDialog = createDialog(recipient);
+                    AlertDialog alertDialog = createDialog(recipient, amount);
                     alertDialog.show();
                 }
             } else {
