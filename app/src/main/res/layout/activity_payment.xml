@@ -151,7 +151,8 @@
             android:text="split"
             android:id="@+id/splitButton"
             android:layout_gravity="bottom"
-            android:layout_weight="0.33" />
+            android:layout_weight="0.33"
+            android:onClick="splitActivity"/>
 
         <Button
             android:layout_width="wrap_content"

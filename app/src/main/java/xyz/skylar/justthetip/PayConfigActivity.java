@@ -251,4 +251,8 @@ public class PayConfigActivity extends ActivityBase {
             }
         }
     }
+    public void splitActivity(View v){
+        Intent intent = new Intent(PayConfigActivity.this, SplitActivity.class);
+        startActivity(intent);
+    }
 }
