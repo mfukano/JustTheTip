@@ -4,10 +4,36 @@
     android:layout_height="match_parent"
     android:padding="8dp">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="67dp"
+            android:layout_height="67dp"
+            android:id="@+id/profilePic"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/placeholder"
+            android:maxHeight="16dp"
+            android:maxWidth="16dp"
+            android:padding="5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test"
+            android:id="@+id/testText"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal" />
+    </LinearLayout>
+
+    <SeekBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
-        android:id="@+id/testText"
-        android:layout_gravity="center_vertical" />
+        android:id="@+id/splitSeekBar"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.85"
+        android:paddingLeft="15dp"
+        android:paddingRight="5dp" />
 </LinearLayout>
