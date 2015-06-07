@@ -174,13 +174,14 @@ public class PayConfigActivity extends ActivityBase {
     }
 
     // confirmation of payment dialog after QR scan
-    public AlertDialog createDialog (String recipient, String amount) {
+    public AlertDialog createDialog (final String recipient, final String email, final String amount) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Send " + amount + " to " + recipient + "?")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // send money w/ api call
+                        makeAPIcall(email, amount);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -217,24 +218,37 @@ public class PayConfigActivity extends ActivityBase {
             String contents = result.getContents();
             if (contents != null) {
                 Log.i("Success!", contents.toString());
-                // set recipient
-                String recipient = null;
-                String amount = tipCalc.getText().toString();
-                try {
-                    JSONObject userInfoJSON = new JSONObject(contents);
-                    recipient = userInfoJSON.getString("display_name");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (recipient!=null) {
-                    AlertDialog alertDialog = createDialog(recipient, amount);
-                    alertDialog.show();
-                }
+                makePayment(contents);
             } else {
                 Log.i("Failed.", "no result to show");
             }
         }
     }
+
+    // shows alert dialog and makes api call to send money
+    public void makePayment (String contents) {
+        String recipient = null;
+        String email = null;
+        String amount = tipCalc.getText().toString();
+        try {
+            JSONObject userInfoJSON = new JSONObject(contents);
+            recipient = userInfoJSON.getString("display_name");
+            email = userInfoJSON.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (recipient!=null && email!=null) {
+            // clicking OK on the alert dialog will call makeAPIcall below
+            AlertDialog alertDialog = createDialog(recipient, email, amount);
+            alertDialog.show();
+        }
+    }
+
+    public void makeAPIcall (String email, String amount) {
+        String params[] = {MainActivity.authCode, email, amount};
+        new MakePayment(context, PayConfigActivity.this).execute(params);
+    }
+
     public void splitActivity(View v){
         Intent intent = new Intent(PayConfigActivity.this, SplitActivity.class);
         startActivity(intent);
