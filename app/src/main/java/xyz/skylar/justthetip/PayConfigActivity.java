@@ -347,7 +347,19 @@ public class PayConfigActivity extends ActivityBase {
     }
 
     public void splitActivity(View v){
-        Intent intent = new Intent(PayConfigActivity.this, SplitActivity.class);
-        startActivity(intent);
+        EditText et = (EditText) findViewById(R.id.tipOut);
+        try{
+            double total = Double.parseDouble(et.getText().toString());
+            if(total > 0.0) {
+                Intent intent = new Intent(PayConfigActivity.this, SplitActivity.class);
+                intent.putExtra("name", GetMyInfo.DISPLAY_NAME);
+                intent.putExtra("profilePic", GetMyInfo.PICTURE);
+                startActivity(intent);
+            }else{
+                displayToast("I need a total!");
+            }
+        }catch(NumberFormatException e){
+            displayToast("I need a total!");
+        }
     }
 }
