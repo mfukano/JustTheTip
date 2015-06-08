@@ -53,16 +53,16 @@
         android:layout_height="match_parent">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="even split"
             android:id="@+id/evenSplit"
-            android:layout_weight="0.4"
+            android:layout_weight="1"
             android:textColor="#FFFFFF"
             android:layout_gravity="bottom" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="+"
             android:id="@+id/button3"
@@ -71,16 +71,16 @@
             android:onClick="clickButton"
             android:gravity="center"
             android:layout_gravity="bottom"
-            android:layout_weight="0.2"
+            android:layout_weight="0.5"
             android:textColor="#FFFFFF"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="next"
             android:id="@+id/nextButton"
             android:layout_gravity="bottom"
-            android:layout_weight="0.4"
+            android:layout_weight="1"
             android:textColor="#FFFFFF"/>
 
     </LinearLayout>
