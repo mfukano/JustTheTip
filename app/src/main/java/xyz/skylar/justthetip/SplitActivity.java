@@ -161,7 +161,7 @@ public class SplitActivity extends ActivityBase {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     //Log.d("onProgressChanged", "prog: " + prog);
-                    updateTotal();
+                    //updateTotal();
                     prog = progress;
                     le.amount = 0.0;
                     if(progress > 0){
@@ -174,11 +174,12 @@ public class SplitActivity extends ActivityBase {
                     le.percent = prog;
                     le.msb.setProgress(prog);
                     updateTotal();
-                    TextView amount = (TextView) newView.findViewById(R.id.amount);
-                    amount.setText(String.format("$%.2f", le.amount));
                     if(remainingAmount >= 0.0){
                         le.lastPositive=progress;
                     }
+                    TextView amount = (TextView) newView.findViewById(R.id.amount);
+                    amount.setText(String.format("$%.2f", le.amount));
+
                 }
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
@@ -195,8 +196,11 @@ public class SplitActivity extends ActivityBase {
                         Log.d("onStopTrackingTouch", "set amount to: " + result);
                     }
                     le.percent = prog;
-                    le.msb.setProgress(le.lastPositive);
                     updateTotal();
+                    if(remainingAmount >= 0.0){
+                        le.lastPositive=prog;
+                    }
+                    le.msb.setProgress(le.lastPositive);
                     TextView amount = (TextView) newView.findViewById(R.id.amount);
                     amount.setText(String.format("$%.2f", le.amount));
                 }
@@ -209,7 +213,7 @@ public class SplitActivity extends ActivityBase {
 
     private double roundUp(double d) {
         double result = (double)Math.round(d * 100) / 100;
-        Log.d("roundUp","rounded " + d +" to " + result);
+        //Log.d("roundUp","rounded " + d +" to " + result);
         return result;
 
     }
@@ -311,14 +315,14 @@ public class SplitActivity extends ActivityBase {
                 //aa.getItem(j).amount = (total*(percent/100));
                 amount = aa.getItem(j).amount;
                 split += amount;
-                Log.d("updateTotal", "amount: " + amount);
+                //Log.d("updateTotal", "amount: " + amount);
                 split = roundUp(split);
                 remainingAmount = roundUp(total - split);
-                if(remainingAmount < 0.0) {
+                /*if(remainingAmount < 0.0) {
                     aa.getItem(j).amount += remainingAmount;
                     remainingAmount = 0.0;
                     updateTotal();
-                }
+                }*/
                 TextView rm = (TextView) findViewById(R.id.remaining);
                 rm.setText("remaining: $" + df.format(remainingAmount));
                 //aa.notifyDataSetChanged();
