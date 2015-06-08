@@ -38,16 +38,40 @@
         android:layout_alignParentStart="true"
         android:layout_above="@+id/button3" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/button3"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="clickButton"
-        android:gravity="center"
-        android:layout_gravity="center" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="even split"
+            android:id="@+id/evenSplit"
+            android:layout_gravity="center"
+            android:layout_weight="0.4" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:id="@+id/button3"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="clickButton"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_weight="0.2" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="next"
+            android:id="@+id/nextButton"
+            android:layout_gravity="center"
+            android:layout_weight="0.4" />
+
+    </LinearLayout>
 
 </LinearLayout>
