@@ -60,8 +60,7 @@ public class SplitActivity extends ActivityBase {
         tipTotal.setText("tip total: " + String.format("$%.2f",total));
         TextView remaining = (TextView) findViewById(R.id.remaining);
         DecimalFormat df = new DecimalFormat("0.00");
-        remaining.setText("Remaining Amount: "+String.format("$%.2f",total));
-        remaining.setText(total.toString());
+        remaining.setText("remaining: "+String.format("$%.2f",total));
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
         evenSplit.setOnClickListener(EvenSplitListener);
         addSomeone(name, profilePic, true);
@@ -109,6 +108,7 @@ public class SplitActivity extends ActivityBase {
         public int percent = 0;
         public SeekBar msb;
         public boolean isPrimary;
+        public int lastPositive;
     }
 
 
@@ -172,7 +172,12 @@ public class SplitActivity extends ActivityBase {
                     }
                     le.percent = prog;
                     le.msb.setProgress(prog);
+                    TextView amount = (TextView) newView.findViewById(R.id.amount);
+                    amount.setText(String.format("$%.2f", le.amount));
                     updateTotal();
+                    if(remainingAmount >= 0.0){
+                        le.lastPositive=progress;
+                    }
                 }
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
@@ -180,19 +185,22 @@ public class SplitActivity extends ActivityBase {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    //Log.d("onStopTrackingTouch", "prog: " + prog);
+                    Log.d("onStopTrackingTouch", "prog: " + prog);
                     le.amount = 0.0;
-                    if(prog > 0) {
+                    if(true) {
                         double result = roundUp((total * (prog / 100.0)));
                         le.amount = result;
                         Log.d("onStopTrackingTouch", "set amount to: " + result);
                     }
-
                     le.percent = prog;
-                    le.msb.setProgress(prog);
+                    le.msb.setProgress(le.lastPositive);
+                    TextView amount = (TextView) newView.findViewById(R.id.amount);
+                    amount.setText(String.format("$%.2f", le.amount));
                     updateTotal();
                 }
             });
+            TextView amount = (TextView) newView.findViewById(R.id.amount);
+            amount.setText(String.format("$%.2f", le.amount));
             return newView;
         }
     }
@@ -221,6 +229,7 @@ public class SplitActivity extends ActivityBase {
                 Log.i("","Out of bounds: " + j);
             }
         }
+        updateTotal();
     }
 
     public void clickButton(View v){
@@ -231,7 +240,7 @@ public class SplitActivity extends ActivityBase {
     private void addSomeone(String text, Bitmap profilePic, boolean isPrimary) {
         ListElement ael = new ListElement();
         ael.textLabel = text;
-        ael.amount = (float) 20.0;
+        ael.amount = (float) 0.0;
         ael.profilePic = profilePic;
         ael.isPrimary = isPrimary;
         aList.add(ael);
@@ -303,12 +312,12 @@ public class SplitActivity extends ActivityBase {
                 Log.d("updateTotal", "split; " + split);
                 split = roundUp(split);
                 remainingAmount = roundUp(total - split);
-                if(remainingAmount < 0.0) {
-                    aa.getItem(j).amount += remainingAmount;
-                    remainingAmount = 0.0;
-                }
+                //if(remainingAmount < 0.0) {
+                    //aa.getItem(j).amount += remainingAmount;
+                    //remainingAmount = 0.0;
+                //}
                 TextView rm = (TextView) findViewById(R.id.remaining);
-                rm.setText("Remaining Amount: $" + df.format(remainingAmount));
+                rm.setText("remaining: $" + df.format(remainingAmount));
                 //aa.notifyDataSetChanged();
                 //ListView lv = (ListView) findViewById(R.id.listView);
                 //lv.invalidateViews();
