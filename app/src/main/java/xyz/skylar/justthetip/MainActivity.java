@@ -17,38 +17,18 @@
 
 package xyz.skylar.justthetip;
 
-import android.support.v4.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.*;
-import org.apache.http.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
@@ -95,8 +75,8 @@ public class MainActivity extends ActivityBase {
             if (resultCode == RESULT_OK) {
                 String result = data.getStringExtra("code");
                 Log.i("", "~~~Token:" + result);
-                TextView token = (TextView) findViewById(R.id.textView4);
-                token.setText(result);
+               /* TextView token = (TextView) findViewById(R.id.textView4);
+                token.setText(result);*/
                 authCode = result;
                 // calls AsyncTask class to make an API call
                 new GetMyInfo().execute(authCode);

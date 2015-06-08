@@ -19,15 +19,29 @@
 
     ]]>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:id="@+id/profilePic"
+        android:layout_gravity="center"
+        android:layout_weight="0.25"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/textView3"
+        android:layout_toStartOf="@+id/textView3"
+        android:layout_marginTop="111dp" />
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login to Venmo"
-        android:id="@+id/button2"
-        android:onClick="loginVenmo"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:text="here is your QR tag"
+        android:id="@+id/textView"
+        android:layout_gravity="center"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:layout_alignTop="@+id/profilePic"
+        android:layout_toRightOf="@+id/profilePic"
+        android:layout_marginTop="50dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,8 +49,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Token:"
         android:id="@+id/textView3"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/button2"
+        android:layout_marginTop="132dp"
+        android:layout_below="@+id/profilePic"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -47,8 +61,8 @@
         android:id="@+id/textView4"
         android:lines="4"
         android:gravity="center"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignTop="@+id/textView3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp" />
 
 </RelativeLayout>

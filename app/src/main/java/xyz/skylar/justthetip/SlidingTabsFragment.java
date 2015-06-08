@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 /**
  * Created by Skylar on 5/28/2015.
@@ -158,12 +157,12 @@ public class SlidingTabsFragment extends Fragment {
                     view = getActivity().getLayoutInflater().inflate(R.layout.qr_tag,
                             container, false);
                     container.addView(view);
-                    TextView tv = (TextView) view.findViewById(R.id.textView);
-                    ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
+
+                    Button btn = (Button) view.findViewById(R.id.login);
                     ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
+                    qrImage.setVisibility(View.INVISIBLE);
 
-                    if (MainActivity.authCode != null && GetMyInfo.userInfo != null) {
-
+                    if (MainActivity.authCode != null) {
                         String qr_data = GetMyInfo.userInfo;
                         int qr_dimension = 500;
                         Log.i ("QR DATA", qr_data);
@@ -175,16 +174,15 @@ public class SlidingTabsFragment extends Fragment {
                         try {
                             Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
                             qrImage.setImageBitmap(qr_bitmap);
+                            btn.setVisibility(View.GONE);
+                            qrImage.setVisibility(View.VISIBLE);
                         } catch (WriterException e) {
                             e.printStackTrace();
                         }
 
-                        profilePic.setImageBitmap(GetMyInfo.PICTURE);
-                        tv.setText(GetMyInfo.DISPLAY_NAME);
-
-                    } else {
+                    }/* else {
                         tv.setText("Please log in to Venmo to get your QR code.");
-                    }
+                    }*/
 
                     return view;
 
@@ -202,6 +200,15 @@ public class SlidingTabsFragment extends Fragment {
                     view = getActivity().getLayoutInflater().inflate(R.layout.activity_you,
                             container, false);
                     container.addView(view);
+                    TextView tv = (TextView) view.findViewById(R.id.textView);
+                    ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
+
+                    if (MainActivity.authCode != null && GetMyInfo.userInfo != null) {
+                        String usr_data = GetMyInfo.userInfo;
+
+                        profilePic.setImageBitmap(GetMyInfo.PICTURE);
+                        tv.setText(GetMyInfo.DISPLAY_NAME);
+                    }
                     return view;
                 default:
                     // Inflate a new layout from our resources
@@ -247,59 +254,5 @@ public class SlidingTabsFragment extends Fragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
-
     }
-
-
-    // do stuff with the return result from the qr scan
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (result != null) {/*
-            if (requestCode == 2) {
-                if (resultCode == RESULT_OK) {
-                    String result = data.getStringExtra("code");
-                    Log.i("", "~~~Token:" + result);
-                    // Find button
-                    // Set button to not hidden / active
-                    // Set button text to 'restore split'
-                    // Set button to restore proper value
-                    TextView token = (TextView) findViewById(R.id.button);
-                    token.setText(result);
-                    authCode = result;
-                    // calls AsyncTask class to make an API call
-                    new GetMyInfo().execute(authCode);
-                }
-                if (resultCode == RESULT_CANCELED) {
-                    Log.i("", "~~~No token");
-                }
-            } else if (requestCode == 3) {
-                if (resultCode == RESULT_OK) {
-                    String result = data.getStringExtra("code");
-                    Log.i("", "~~~Token:" + result);
-                    // Find button
-                    // Set button to not hidden / active
-                    // Set button text to 'restore split'
-                    // Set button to restore proper value
-                    TextView token = (TextView) findViewById(R.id.button);
-                    token.setText(result);
-                    authCode = result;
-                    // calls AsyncTask class to make an API call
-                    new GetMyInfo().execute(authCode);
-                }
-                if (resultCode == RESULT_CANCELED) {
-                    Log.i("", "~~~No token");
-                }*/
-            } else {
-                String contents = result.getContents();
-                if (contents != null) {
-                    Log.i("Success!", contents.toString());
-                    TextView tv = (TextView) getView().findViewById(R.id.qrResult);
-                    tv.setText(contents.toString());
-                } else {
-                    Log.i("Failed.", "no result to show");
-            }
-        }
-    }
-
 }
