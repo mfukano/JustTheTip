@@ -161,6 +161,7 @@ public class SplitActivity extends ActivityBase {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     //Log.d("onProgressChanged", "prog: " + prog);
+                    updateTotal();
                     prog = progress;
                     le.amount = 0.0;
                     if(progress > 0){
@@ -172,9 +173,9 @@ public class SplitActivity extends ActivityBase {
                     }
                     le.percent = prog;
                     le.msb.setProgress(prog);
+                    updateTotal();
                     TextView amount = (TextView) newView.findViewById(R.id.amount);
                     amount.setText(String.format("$%.2f", le.amount));
-                    updateTotal();
                     if(remainingAmount >= 0.0){
                         le.lastPositive=progress;
                     }
@@ -185,6 +186,7 @@ public class SplitActivity extends ActivityBase {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
+                    updateTotal();
                     Log.d("onStopTrackingTouch", "prog: " + prog);
                     le.amount = 0.0;
                     if(true) {
@@ -194,9 +196,9 @@ public class SplitActivity extends ActivityBase {
                     }
                     le.percent = prog;
                     le.msb.setProgress(le.lastPositive);
+                    updateTotal();
                     TextView amount = (TextView) newView.findViewById(R.id.amount);
                     amount.setText(String.format("$%.2f", le.amount));
-                    updateTotal();
                 }
             });
             TextView amount = (TextView) newView.findViewById(R.id.amount);
@@ -309,13 +311,14 @@ public class SplitActivity extends ActivityBase {
                 //aa.getItem(j).amount = (total*(percent/100));
                 amount = aa.getItem(j).amount;
                 split += amount;
-                Log.d("updateTotal", "split; " + split);
+                Log.d("updateTotal", "amount: " + amount);
                 split = roundUp(split);
                 remainingAmount = roundUp(total - split);
-                //if(remainingAmount < 0.0) {
-                    //aa.getItem(j).amount += remainingAmount;
-                    //remainingAmount = 0.0;
-                //}
+                if(remainingAmount < 0.0) {
+                    aa.getItem(j).amount += remainingAmount;
+                    remainingAmount = 0.0;
+                    updateTotal();
+                }
                 TextView rm = (TextView) findViewById(R.id.remaining);
                 rm.setText("remaining: $" + df.format(remainingAmount));
                 //aa.notifyDataSetChanged();
