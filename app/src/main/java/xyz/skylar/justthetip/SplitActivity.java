@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,7 +52,7 @@ public class SplitActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         Bitmap profilePic = intent.getParcelableExtra("profilePic");
-        addSomeone(name,profilePic);
+        addSomeone(name,profilePic,true);
     }
 
     @Override
@@ -81,6 +82,7 @@ public class SplitActivity extends ActionBarActivity {
         public Bitmap profilePic;
         public float amount;
         public int slider = 0;
+        public boolean isPrimary;
     }
 
 
@@ -105,7 +107,7 @@ public class SplitActivity extends ActionBarActivity {
                 newView = new LinearLayout(getContext());
                 String inflater = Context.LAYOUT_INFLATER_SERVICE;
                 LayoutInflater vi = (LayoutInflater) getContext().getSystemService(inflater);
-                vi.inflate(resource,  newView, true);
+                vi.inflate(resource, newView, true);
             } else {
                 newView = (LinearLayout) convertView;
             }
@@ -113,13 +115,18 @@ public class SplitActivity extends ActionBarActivity {
             TextView mtv = (TextView) newView.findViewById(R.id.testText);
             mtv.setText(le.textLabel);
             ImageView iv = (ImageView) newView.findViewById(R.id.profilePic);
-
-            if(le.profilePic == null){
-                Log.i("","~~~~~before set profile pic is null");
-            }else{
-                Log.i("","~~~~~before set Pic is not null");
-            }
             iv.setImageBitmap(le.profilePic);
+            Button mb = (Button) newView.findViewById(R.id.removeSplitter);
+            mb.setVisibility(newView.INVISIBLE);
+            if (!le.isPrimary){
+                mb.setVisibility(newView.VISIBLE);
+                mb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeSplitter(le.textLabel);
+                    }
+                });
+            }
             final SeekBar msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
             msb.setProgress(le.slider);
             msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -142,21 +149,38 @@ public class SplitActivity extends ActionBarActivity {
             return newView;
         }
     }
+
+    private void removeSplitter(String name) {
+        int count = aa.getCount();
+        for (int j = 0; j < count; j++) {
+            aa.notifyDataSetChanged();
+            String label;
+            try{
+                label = aa.getItem(j).textLabel;
+                if(label.equals(name)) {
+                    aa.remove(aa.getItem(j));
+                    aa.notifyDataSetChanged();
+                    ListView lv = (ListView) findViewById(R.id.listView);
+                    lv.setAdapter(aa);
+                    lv.invalidateViews();
+                }
+            }catch(IndexOutOfBoundsException e) {
+                Log.i("","Out of bounds: " + j);
+            }
+        }
+    }
+
     public void clickButton(View v){
         IntentIntegrator integrator = new IntentIntegrator(SplitActivity.this);
         integrator.initiateScan();
     }
 
-    private void addSomeone(String text, Bitmap profilePic) {
-        if(profilePic == null){
-            Log.i("","~~~~~profile pic is null");
-        }else{
-            Log.i("","~~~~~Pic is not null");
-        }
+    private void addSomeone(String text, Bitmap profilePic, boolean isPrimary) {
         ListElement ael = new ListElement();
         ael.textLabel = text;
         ael.amount = (float) 20.0;
         ael.profilePic = profilePic;
+        ael.isPrimary = isPrimary;
         aList.add(ael);
         ListView lv = (ListView) findViewById(R.id.listView);
         lv.setAdapter(aa);
@@ -205,20 +229,10 @@ public class SplitActivity extends ActionBarActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(profilePic == null){
-                Log.i("","~~~~~profile pic is null");
-            }else{
-                Log.i("","~~~~~Pic is not null");
-            }
             return profilePic;
         }
         public void onPostExecute (Bitmap profilePic) {
-            if(profilePic == null){
-                Log.i("","~~~~~profile pic is null");
-            }else{
-                Log.i("","~~~~~Pic is not null");
-            }
-            addSomeone(name,profilePic);
+            addSomeone(name,profilePic,false);
         }
     }
 }

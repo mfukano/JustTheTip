@@ -4,36 +4,62 @@
     android:layout_height="match_parent"
     android:padding="8dp">
 
+    <ImageView
+        android:layout_width="67dp"
+        android:layout_height="67dp"
+        android:id="@+id/profilePic"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/placeholder"
+        android:maxHeight="16dp"
+        android:maxWidth="16dp"
+        android:padding="5dp" />
+
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="67dp"
-            android:layout_height="67dp"
-            android:id="@+id/profilePic"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/placeholder"
-            android:maxHeight="16dp"
-            android:maxWidth="16dp"
-            android:padding="5dp" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="189dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/testText"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:text="Name"
+                android:layout_weight="0.94" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:text="x"
+                android:id="@+id/removeSplitter"
+                android:textSize="7dp"
+                android:background="#ffff554e"
+                android:textColor="#FFFFFFFF" />
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/splitSeekBar"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test"
-            android:id="@+id/testText"
-            android:layout_gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Amount"
+            android:id="@+id/textView2"
             android:gravity="center_horizontal" />
     </LinearLayout>
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/splitSeekBar"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="0.85"
-        android:paddingLeft="15dp"
-        android:paddingRight="5dp" />
 </LinearLayout>
