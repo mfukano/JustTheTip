@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Amount"
-            android:id="@+id/textView2"
+            android:id="@+id/amount"
             android:gravity="center_horizontal" />
     </LinearLayout>
 

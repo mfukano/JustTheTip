@@ -66,6 +66,9 @@ public class MainActivity extends ActivityBase {
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
+        if(authCode == null){
+            loginVenmo(findViewById(R.id.login));
+        }
     }
 
     // after logging into venmo, this is called

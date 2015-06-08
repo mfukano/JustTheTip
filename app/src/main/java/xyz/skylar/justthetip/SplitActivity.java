@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class SplitActivity extends ActionBarActivity {
     private MyAdapter aa;
     private ArrayList<ListElement> aList;
     private Double total;
+    private Double remainingAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,13 @@ public class SplitActivity extends ActionBarActivity {
         String name = intent.getStringExtra("name");
         Bitmap profilePic = intent.getParcelableExtra("profilePic");
         total = intent.getExtras().getDouble("total");
+        remainingAmount = total;
         TextView tipTotal = (TextView) findViewById(R.id.tipTotal);
-        tipTotal.setText("tip total: $" + Double.toString(total));
+        tipTotal.setText("tip total: $" + String.format("$%.2f",total));
+        TextView remaining = (TextView) findViewById(R.id.remaining);
+        DecimalFormat df = new DecimalFormat("0.00");
+        remaining.setText("Remaining Amount: "+String.format("$%.2f",total));
+        remaining.setText(total.toString());
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
         evenSplit.setOnClickListener(EvenSplitListener);
         addSomeone(name, profilePic, true);
@@ -99,8 +106,8 @@ public class SplitActivity extends ActionBarActivity {
         ListElement() {};
         public String textLabel;
         public Bitmap profilePic;
-        public float amount;
-        public int slider = 0;
+        public double amount;
+        public int percent = 0;
         public SeekBar msb;
         public boolean isPrimary;
     }
@@ -120,7 +127,7 @@ public class SplitActivity extends ActionBarActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LinearLayout newView;
+            final LinearLayout newView;
             final ListElement le = getItem(position);
             // Inflate a new view if necessary.
             if (convertView == null) {
@@ -148,32 +155,59 @@ public class SplitActivity extends ActionBarActivity {
                 });
             }
             le.msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
-            le.msb.setProgress(le.slider);
+            le.msb.setProgress(le.percent);
             le.msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int prog = 0;
                 boolean status;
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    //Log.d("onProgressChanged", "prog: " + prog);
                     prog = progress;
+                    le.amount = 0.0;
+                    if(progress > 0){
+                        double result = roundUp((total * (progress / 100.0)));
+                        le.amount = result;
+                        TextView amt = (TextView) newView.findViewById(R.id.amount);
+                        amt.setText(String.format("$%.2f", result));
+                        Log.d("onProgressChanged", "set amount to: " + result);
+                    }
+                    le.percent = prog;
                     le.msb.setProgress(prog);
+                    updateTotal();
                 }
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    Log.d("onStopTrackingTouch", "prog: " + prog);
-                    le.slider = prog;
+                    //Log.d("onStopTrackingTouch", "prog: " + prog);
+                    le.amount = 0.0;
+                    if(prog > 0) {
+                        double result = roundUp((total * (prog / 100.0)));
+                        le.amount = result;
+                        Log.d("onStopTrackingTouch", "set amount to: " + result);
+                    }
+
+                    le.percent = prog;
                     le.msb.setProgress(prog);
+                    updateTotal();
                 }
             });
             return newView;
         }
     }
 
+    private double roundUp(double d) {
+        double result = (double)Math.round(d * 100) / 100;
+        Log.d("roundUp","rounded " + d +" to " + result);
+        return result;
+
+    }
+
     private void removeSplitter(String name) {
         int count = aa.getCount();
         for (int j = 0; j < count; j++) {
-            aa.notifyDataSetChanged();
             String label;
             try{
                 label = aa.getItem(j).textLabel;
@@ -253,6 +287,36 @@ public class SplitActivity extends ActionBarActivity {
         }
         public void onPostExecute (Bitmap profilePic) {
             addSomeone(name,profilePic,false);
+        }
+    }
+    private void updateTotal(){
+        int count = aa.getCount();
+        double split = 0.0;
+        for (int j = 0; j < count; j++) {
+            double percent;
+            double amount;
+            try{
+                DecimalFormat df = new DecimalFormat("0.00");
+                //percent = aa.getItem(j).percent;
+                //aa.getItem(j).amount = (total*(percent/100));
+                amount = aa.getItem(j).amount;
+                split += amount;
+                Log.d("updateTotal", "split; " + split);
+                split = roundUp(split);
+                remainingAmount = roundUp(total - split);
+                if(remainingAmount < 0.0) {
+                    aa.getItem(j).amount += remainingAmount;
+                    remainingAmount = 0.0;
+                }
+                TextView rm = (TextView) findViewById(R.id.remaining);
+                rm.setText("Remaining Amount: $" + df.format(remainingAmount));
+                //aa.notifyDataSetChanged();
+                //ListView lv = (ListView) findViewById(R.id.listView);
+                //lv.invalidateViews();
+
+            }catch(IndexOutOfBoundsException e) {
+                Log.i("","Out of bounds: " + j);
+            }
         }
     }
 }
