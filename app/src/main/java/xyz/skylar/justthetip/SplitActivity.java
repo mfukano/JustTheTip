@@ -52,6 +52,9 @@ public class SplitActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         Bitmap profilePic = intent.getParcelableExtra("profilePic");
+        Double total = intent.getExtras().getDouble("total");
+        TextView tipTotal = (TextView) findViewById(R.id.tipTotal);
+        tipTotal.setText("tip total: $" + Double.toString(total));
         addSomeone(name,profilePic,true);
     }
 
