@@ -165,7 +165,7 @@ public class SlidingTabsFragment extends Fragment {
                     if (MainActivity.authCode != null) {
                         String qr_data = GetMyInfo.userInfo;
                         int qr_dimension = 500;
-                        Log.i ("QR DATA", qr_data);
+                        //Log.i ("QR DATA", qr_data);
 
                         QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
                                 BarcodeFormat.QR_CODE.toString(), qr_dimension);
