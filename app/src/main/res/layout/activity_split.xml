@@ -5,7 +5,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="xyz.skylar.justthetip.SplitActivity">
+    tools:context="xyz.skylar.justthetip.SplitActivity"
+    android:padding="0dp">
 
     <TextView
         android:layout_width="fill_parent"
