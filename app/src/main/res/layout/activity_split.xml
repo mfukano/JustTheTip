@@ -9,7 +9,7 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="TIP TOTAL"
         android:id="@+id/tipTotal"
         android:layout_alignParentLeft="true"
@@ -17,51 +17,57 @@
         android:layout_above="@+id/listView"
         android:layout_alignParentTop="true"
         android:gravity="center"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        android:layout_weight="0.25" />
 
     <TextView android:text="Add people to the tip" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/textView5"
         android:textSize="20dp"
         android:layout_alignRight="@+id/listView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_weight="0.1" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="375dp"
+        android:layout_height="0dp"
         android:id="@+id/listView"
         android:paddingBottom="5dp"
         android:layout_below="@+id/textView5"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/button3" />
+        android:layout_above="@+id/button3"
+        android:layout_weight="1" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Remaining Amount: $"
         android:id="@+id/remaining"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center"
+        android:layout_weight="0.15"
+        android:gravity="center" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="0.25">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="even split"
             android:id="@+id/evenSplit"
             android:layout_gravity="center"
-            android:layout_weight="0.4"
+            android:layout_weight="1"
             android:textColor="#FFFFFF"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="+"
             android:id="@+id/button3"
@@ -70,16 +76,16 @@
             android:onClick="clickButton"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_weight="0.2"
+            android:layout_weight="0.5"
             android:textColor="#FFFFFF"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="next"
             android:id="@+id/nextButton"
             android:layout_gravity="center"
-            android:layout_weight="0.4"
+            android:layout_weight="1"
             android:textColor="#FFFFFF"/>
 
     </LinearLayout>

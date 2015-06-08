@@ -57,7 +57,7 @@ public class SplitActivity extends ActivityBase {
         total = intent.getExtras().getDouble("total");
         remainingAmount = total;
         TextView tipTotal = (TextView) findViewById(R.id.tipTotal);
-        tipTotal.setText("tip total: $" + String.format("$%.2f",total));
+        tipTotal.setText("tip total: " + String.format("$%.2f",total));
         TextView remaining = (TextView) findViewById(R.id.remaining);
         DecimalFormat df = new DecimalFormat("0.00");
         remaining.setText("Remaining Amount: "+String.format("$%.2f",total));
