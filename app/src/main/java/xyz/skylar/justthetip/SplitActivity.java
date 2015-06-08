@@ -39,6 +39,7 @@ import java.util.List;
 public class SplitActivity extends ActionBarActivity {
     private MyAdapter aa;
     private ArrayList<ListElement> aList;
+    private Double total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,12 @@ public class SplitActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         Bitmap profilePic = intent.getParcelableExtra("profilePic");
-        addSomeone(name,profilePic,true);
+        total = intent.getExtras().getDouble("total");
+        TextView tipTotal = (TextView) findViewById(R.id.tipTotal);
+        tipTotal.setText("tip total: $" + Double.toString(total));
+        Button evenSplit = (Button) findViewById(R.id.evenSplit);
+        evenSplit.setOnClickListener(EvenSplitListener);
+        addSomeone(name, profilePic, true);
     }
 
     @Override
@@ -76,12 +82,26 @@ public class SplitActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // split the total evenly among the people
+    View.OnClickListener EvenSplitListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // iterate aList
+            int size = aList.size();
+            int percentage = 100 / size;
+            for (ListElement listElement : aList) {
+                listElement.msb.setProgress(percentage);
+            }
+        }
+    };
+
     private class ListElement {
         ListElement() {};
         public String textLabel;
         public Bitmap profilePic;
         public float amount;
         public int slider = 0;
+        public SeekBar msb;
         public boolean isPrimary;
     }
 
@@ -127,15 +147,15 @@ public class SplitActivity extends ActionBarActivity {
                     }
                 });
             }
-            final SeekBar msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
-            msb.setProgress(le.slider);
-            msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            le.msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
+            le.msb.setProgress(le.slider);
+            le.msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int prog = 0;
                 boolean status;
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     prog = progress;
-                    msb.setProgress(prog);
+                    le.msb.setProgress(prog);
                 }
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -143,7 +163,7 @@ public class SplitActivity extends ActionBarActivity {
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     Log.d("onStopTrackingTouch", "prog: " + prog);
                     le.slider = prog;
-                    msb.setProgress(prog);
+                    le.msb.setProgress(prog);
                 }
             });
             return newView;

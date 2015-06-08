@@ -374,6 +374,7 @@ public class PayConfigActivity extends ActivityBase {
                 Intent intent = new Intent(PayConfigActivity.this, SplitActivity.class);
                 intent.putExtra("name", GetMyInfo.DISPLAY_NAME);
                 intent.putExtra("profilePic", GetMyInfo.PICTURE);
+                intent.putExtra("total", total);
                 startActivity(intent);
             }else{
                 displayToast("I need a total!");
