@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class SplitActivity extends ActionBarActivity {
     private MyAdapter aa;
     private ArrayList<ListElement> aList;
     private Double total;
+    private Double remainingAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,13 @@ public class SplitActivity extends ActionBarActivity {
         String name = intent.getStringExtra("name");
         Bitmap profilePic = intent.getParcelableExtra("profilePic");
         total = intent.getExtras().getDouble("total");
+        remainingAmount = total;
         TextView tipTotal = (TextView) findViewById(R.id.tipTotal);
         tipTotal.setText("tip total: $" + Double.toString(total));
+        TextView remaining = (TextView) findViewById(R.id.remaining);
+        DecimalFormat df = new DecimalFormat("0.00");
+        remaining.setText("Remaining Amount: $"+df.format(total));
+        remaining.setText(total.toString());
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
         evenSplit.setOnClickListener(EvenSplitListener);
         addSomeone(name, profilePic, true);
@@ -99,8 +106,8 @@ public class SplitActivity extends ActionBarActivity {
         ListElement() {};
         public String textLabel;
         public Bitmap profilePic;
-        public float amount;
-        public int slider = 0;
+        public double amount;
+        public int percent = 0;
         public SeekBar msb;
         public boolean isPrimary;
     }
@@ -148,22 +155,35 @@ public class SplitActivity extends ActionBarActivity {
                 });
             }
             le.msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
-            le.msb.setProgress(le.slider);
+            le.msb.setProgress(le.percent);
             le.msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int prog = 0;
                 boolean status;
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    Log.d("onProgressChanged", "prog: " + prog);
                     prog = progress;
+                    if(progress > 0)
+                        le.amount = (total*(progress/100.0));
+                        Log.d("onProgressChanged", "set amount to: " + (total*progress/100.0));
+                    le.percent = prog;
                     le.msb.setProgress(prog);
+                    updateTotal();
                 }
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     Log.d("onStopTrackingTouch", "prog: " + prog);
-                    le.slider = prog;
+
+                    //if(prog > 0)
+                        //le.amount = (total*(prog/100));
+
+                    le.percent = prog;
                     le.msb.setProgress(prog);
+                    updateTotal();
                 }
             });
             return newView;
@@ -173,7 +193,6 @@ public class SplitActivity extends ActionBarActivity {
     private void removeSplitter(String name) {
         int count = aa.getCount();
         for (int j = 0; j < count; j++) {
-            aa.notifyDataSetChanged();
             String label;
             try{
                 label = aa.getItem(j).textLabel;
@@ -253,6 +272,31 @@ public class SplitActivity extends ActionBarActivity {
         }
         public void onPostExecute (Bitmap profilePic) {
             addSomeone(name,profilePic,false);
+        }
+    }
+    private void updateTotal(){
+        int count = aa.getCount();
+        double split = 0.0;
+        for (int j = 0; j < count; j++) {
+            double percent;
+            double amount;
+            try{
+                DecimalFormat df = new DecimalFormat("0.00");
+                //percent = aa.getItem(j).percent;
+                //aa.getItem(j).amount = (total*(percent/100));
+                amount = aa.getItem(j).amount;
+                split += amount;
+                remainingAmount = total - split;
+                Log.d("updateTotal", "amount; " + amount);
+                TextView rm = (TextView) findViewById(R.id.remaining);
+                rm.setText("Remaining Amount: $" + df.format(remainingAmount));
+                //aa.notifyDataSetChanged();
+                //ListView lv = (ListView) findViewById(R.id.listView);
+                //lv.invalidateViews();
+
+            }catch(IndexOutOfBoundsException e) {
+                Log.i("","Out of bounds: " + j);
+            }
         }
     }
 }
