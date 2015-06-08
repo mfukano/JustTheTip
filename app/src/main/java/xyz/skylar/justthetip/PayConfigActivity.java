@@ -211,9 +211,9 @@ public class PayConfigActivity extends ActivityBase {
         Method to construct the value placed in the second edit text below "tip total"
      */
     public void setTipTotal(String str){
-       /* if(total.getText().toString().matches(""))
+        if(total.getText().toString().matches(""))
             displayToast("Can't calculate a tip without a total");
-        else {*/
+        else {
             double p = Double.parseDouble(str);
             double prc = p / 100;
             double ttl = Double.parseDouble(total.getText().toString());
@@ -221,7 +221,7 @@ public class PayConfigActivity extends ActivityBase {
 
             String amt = String.format("%.2f", ttl);
             tipCalc.setText(amt);
-       // }
+       }
     }
 
     /*
@@ -331,7 +331,14 @@ public class PayConfigActivity extends ActivityBase {
     @Override
     public void onActivityResult (int requestCode, int resultCode, Intent intent) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (result != null) {
+        if(requestCode == 5 && resultCode == RESULT_OK){
+            TextView msg = (TextView) findViewById(R.id.tipHeader);
+            msg.setText("amount to send");
+            total.setFocusable(false);
+            seek.setEnabled(false);
+            tipCalc.setFocusable(false);
+
+        }else if (result != null) {
             String contents = result.getContents();
             if (contents != null) {
                 Log.i("Success!", contents.toString());
@@ -340,6 +347,7 @@ public class PayConfigActivity extends ActivityBase {
                 Log.i("Failed.", "no result to show");
             }
         }
+
     }
 
     // shows alert dialog and makes api call to send money
@@ -375,7 +383,7 @@ public class PayConfigActivity extends ActivityBase {
                 intent.putExtra("name", GetMyInfo.DISPLAY_NAME);
                 intent.putExtra("profilePic", GetMyInfo.PICTURE);
                 intent.putExtra("total", total);
-                startActivity(intent);
+                startActivityForResult(intent,5);
             }else{
                 displayToast("I need a total!");
             }

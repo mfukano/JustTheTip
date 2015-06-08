@@ -81,7 +81,8 @@
             android:id="@+id/nextButton"
             android:layout_gravity="bottom"
             android:layout_weight="1"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            android:onClick="requestFunds" />
 
     </LinearLayout>
 

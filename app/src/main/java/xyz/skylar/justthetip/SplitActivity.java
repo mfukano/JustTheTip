@@ -1,9 +1,11 @@
 package xyz.skylar.justthetip;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,10 +43,13 @@ public class SplitActivity extends ActivityBase {
     private ArrayList<ListElement> aList;
     private Double total;
     private Double remainingAmount;
+    Context context;
+    Intent resultIntent = new Intent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_split);
         aList = new ArrayList<ListElement>();
         aa = new MyAdapter(this, R.layout.split_element, aList);
@@ -63,7 +68,10 @@ public class SplitActivity extends ActivityBase {
         remaining.setText("remaining: "+String.format("$%.2f",total));
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
         evenSplit.setOnClickListener(EvenSplitListener);
-        addSomeone(name, profilePic, true);
+        addSomeone(name, GetMyInfo.EMAIL, profilePic, true);
+        SplitActivity.this.setResult(Activity.RESULT_CANCELED, resultIntent);
+        resultIntent.putExtra("status", "FAIL");
+        setResult(Activity.RESULT_CANCELED, resultIntent);
     }
 
     @Override
@@ -104,6 +112,7 @@ public class SplitActivity extends ActivityBase {
         ListElement() {}
         public String textLabel;
         public Bitmap profilePic;
+        public String email;
         public double amount;
         public int percent = 0;
         public SeekBar msb;
@@ -169,7 +178,7 @@ public class SplitActivity extends ActivityBase {
                         le.amount = result;
                         TextView amt = (TextView) newView.findViewById(R.id.amount);
                         amt.setText(String.format("$%.2f", result));
-                        Log.d("onProgressChanged", "set amount to: " + result);
+                        //Log.d("onProgressChanged", "set amount to: " + result);
                     }
                     le.percent = prog;
                     le.msb.setProgress(prog);
@@ -193,7 +202,7 @@ public class SplitActivity extends ActivityBase {
                     if(true) {
                         double result = roundUp((total * (prog / 100.0)));
                         le.amount = result;
-                        Log.d("onStopTrackingTouch", "set amount to: " + result);
+                        //Log.d("onStopTrackingTouch", "set amount to: " + result);
                     }
                     le.percent = prog;
                     updateTotal();
@@ -243,12 +252,13 @@ public class SplitActivity extends ActivityBase {
         integrator.initiateScan();
     }
 
-    private void addSomeone(String text, Bitmap profilePic, boolean isPrimary) {
+    private void addSomeone(String text, String email, Bitmap profilePic, boolean isPrimary) {
         ListElement ael = new ListElement();
         ael.textLabel = text;
         ael.amount = (float) 0.0;
         ael.profilePic = profilePic;
         ael.isPrimary = isPrimary;
+        ael.email = email;
         aList.add(ael);
         ListView lv = (ListView) findViewById(R.id.listView);
         lv.setAdapter(aa);
@@ -264,11 +274,13 @@ public class SplitActivity extends ActivityBase {
                 // set recipient
                 String recipient;
                 String url;
+                String email;
                 try {
                     JSONObject userInfoJSON = new JSONObject(contents);
                     recipient = userInfoJSON.getString("display_name");
                     url = userInfoJSON.getString("pic_url");
-                    new GetProfilePic(recipient).execute(url);
+                    email = userInfoJSON.getString("email");
+                    new GetProfilePic(recipient,email).execute(url);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -280,8 +292,10 @@ public class SplitActivity extends ActivityBase {
     private class GetProfilePic extends AsyncTask<String, Void, Bitmap> {
         public Bitmap profilePic = null;
         public String name;
-        public GetProfilePic(String recipient){
+        public String email_address;
+        public GetProfilePic(String recipient, String email){
             name = recipient;
+            email_address = email;
         }
         protected Bitmap doInBackground (String... url) {
             URL PhotoURL;
@@ -300,7 +314,8 @@ public class SplitActivity extends ActivityBase {
             return profilePic;
         }
         public void onPostExecute (Bitmap profilePic) {
-            addSomeone(name,profilePic,false);
+
+            addSomeone(name,email_address,profilePic,false);
         }
     }
     private void updateTotal(){
@@ -318,11 +333,16 @@ public class SplitActivity extends ActivityBase {
                 //Log.d("updateTotal", "amount: " + amount);
                 split = roundUp(split);
                 remainingAmount = roundUp(total - split);
-                /*if(remainingAmount < 0.0) {
-                    aa.getItem(j).amount += remainingAmount;
+                TextView tv = (TextView) findViewById(R.id.remaining);
+                if(roundUp(remainingAmount) == 0.0) {
+                    tv.setTextColor(Color.parseColor("#009688"));
+
+                    /*aa.getItem(j).amount += remainingAmount;
                     remainingAmount = 0.0;
-                    updateTotal();
-                }*/
+                    updateTotal();*/
+                }else{
+                    tv.setTextColor(Color.RED);
+                }
                 TextView rm = (TextView) findViewById(R.id.remaining);
                 rm.setText("remaining: $" + df.format(remainingAmount));
                 //aa.notifyDataSetChanged();
@@ -331,6 +351,21 @@ public class SplitActivity extends ActivityBase {
 
             }catch(IndexOutOfBoundsException e) {
                 Log.i("","Out of bounds: " + j);
+            }
+        }
+    }
+    public void requestFunds(View v){
+        SplitActivity.this.setResult(Activity.RESULT_OK, resultIntent);
+        resultIntent.putExtra("status", "SUCCESS");
+        setResult(Activity.RESULT_OK, resultIntent);
+        for (ListElement listElement : aList) {
+            if(listElement.email.equals(GetMyInfo.EMAIL)){
+                Log.i("",listElement.email + " is the host, skipping");
+            }else{
+                Log.i("","Would request $" + String.format("%.2f",listElement.amount) + " from " +listElement.email);
+                //PayConfigActivity.makeAPIcall(listElement.email, String.format("%.2f",listElement.amount));
+                String params[] = {MainActivity.authCode, listElement.email, String.format("%.2f",(-1.0)*listElement.amount)};
+                new MakePayment(context, SplitActivity.this).execute(params);
             }
         }
     }
