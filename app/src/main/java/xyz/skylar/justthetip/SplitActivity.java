@@ -67,6 +67,11 @@ public class SplitActivity extends ActivityBase {
         DecimalFormat df = new DecimalFormat("0.00");
         remaining.setText("remaining: "+String.format("$%.2f",total));
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
+        evenSplit.setBackgroundColor(0xFF01579B);
+        Button add = (Button) findViewById(R.id.button3);
+        Button next = (Button) findViewById(R.id.nextButton);
+        add.setBackgroundColor(0xFF01579B);
+        next.setBackgroundColor(0xFF01579B);
         evenSplit.setOnClickListener(EvenSplitListener);
         addSomeone(name, GetMyInfo.EMAIL, profilePic, true);
         SplitActivity.this.setResult(Activity.RESULT_CANCELED, resultIntent);

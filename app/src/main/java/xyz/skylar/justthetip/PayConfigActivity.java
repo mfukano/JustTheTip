@@ -41,6 +41,7 @@ public class PayConfigActivity extends ActivityBase {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null){
             String totIn = savedInstanceState.getString("tot_IN");
             int seekProg = savedInstanceState.getInt("seek_prog");
@@ -52,7 +53,14 @@ public class PayConfigActivity extends ActivityBase {
             tipCalc.setText(tipOut);
         }
         context = this;
+        //FF01579B
         setContentView(R.layout.activity_payment);
+        Button send = (Button) findViewById(R.id.sendButton);
+        send.setBackgroundColor(0xFF01579B);
+        Button split = (Button) findViewById(R.id.splitButton);
+        Button save = (Button) findViewById(R.id.saveButton);
+        split.setBackgroundColor(0xFF01579B);
+        save.setBackgroundColor(0xFF01579B);
         seek = (SeekBar) findViewById(R.id.seekBar);
         tipStr = (TextView) findViewById(R.id.tipTracker);
         total = (EditText) findViewById(R.id.totalInput);
@@ -337,6 +345,12 @@ public class PayConfigActivity extends ActivityBase {
             total.setFocusable(false);
             seek.setEnabled(false);
             tipCalc.setFocusable(false);
+            Button send = (Button) findViewById(R.id.sendButton);
+            send.setBackgroundColor(0xFF009688);
+            Button split = (Button) findViewById(R.id.splitButton);
+            Button save = (Button) findViewById(R.id.saveButton);
+            split.setBackgroundColor(0xFF222222);
+            save.setBackgroundColor(0xFF222222);
 
         }else if (result != null) {
             String contents = result.getContents();
