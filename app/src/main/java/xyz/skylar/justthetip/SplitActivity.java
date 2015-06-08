@@ -48,6 +48,10 @@ public class SplitActivity extends ActionBarActivity {
         ListView myListView = (ListView) findViewById(R.id.listView);
         myListView.setAdapter(aa);
         aa.notifyDataSetChanged();
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        Bitmap profilePic = intent.getParcelableExtra("profilePic");
+        addSomeone(name,profilePic);
     }
 
     @Override

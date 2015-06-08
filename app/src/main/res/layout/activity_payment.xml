@@ -104,7 +104,7 @@
         android:id="@+id/tipTracker"
         android:layout_below="@+id/seekBar"
         android:layout_centerHorizontal="true"
-        android:text="%%%%%%%%%" />
+        android:text="10%" />
 
     <TextView
         android:layout_width="wrap_content"
