@@ -45,6 +45,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Please log in"
         android:id="@+id/textView4"
+        android:lines="4"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerInParent="true"
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true" />
 
