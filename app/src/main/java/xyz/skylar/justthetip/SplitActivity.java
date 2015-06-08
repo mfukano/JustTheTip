@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SplitActivity extends ActionBarActivity {
+public class SplitActivity extends ActivityBase {
     private MyAdapter aa;
     private ArrayList<ListElement> aList;
     private Double total;
@@ -103,7 +102,7 @@ public class SplitActivity extends ActionBarActivity {
     };
 
     private class ListElement {
-        ListElement() {};
+        ListElement() {}
         public String textLabel;
         public Bitmap profilePic;
         public double amount;
@@ -248,8 +247,8 @@ public class SplitActivity extends ActionBarActivity {
             if (contents != null) {
                 Log.i("Success!", contents.toString());
                 // set recipient
-                String recipient = null;
-                String url = null;
+                String recipient;
+                String url;
                 try {
                     JSONObject userInfoJSON = new JSONObject(contents);
                     recipient = userInfoJSON.getString("display_name");
@@ -270,7 +269,7 @@ public class SplitActivity extends ActionBarActivity {
             name = recipient;
         }
         protected Bitmap doInBackground (String... url) {
-            URL PhotoURL = null;
+            URL PhotoURL;
             try {
                 PhotoURL = new URL(url[0]);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) PhotoURL.openConnection();
