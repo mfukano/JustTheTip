@@ -150,7 +150,8 @@
             android:text="save"
             android:id="@+id/saveButton"
             android:layout_gravity="bottom"
-            android:layout_weight="0.33" />
+            android:layout_weight="0.33"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -159,7 +160,8 @@
             android:id="@+id/splitButton"
             android:layout_gravity="bottom"
             android:layout_weight="0.33"
-            android:onClick="splitActivity"/>
+            android:onClick="splitActivity"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -167,7 +169,8 @@
             android:text="send"
             android:id="@+id/sendButton"
             android:layout_gravity="bottom"
-            android:layout_weight="0.33" />
+            android:layout_weight="0.33"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
 

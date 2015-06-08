@@ -233,7 +233,7 @@ public class SlidingTabsFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), PayConfigActivity.class);
                     startActivity(intent);
                 } else {
-                    mViewPager.setCurrentItem(2);
+                    mViewPager.setCurrentItem(0);
                 }
             }
         };
