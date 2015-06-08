@@ -69,8 +69,16 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="18%"
-            android:id="@+id/eighteen"
+            android:text="20%"
+            android:id="@+id/twenty"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25%"
+            android:id="@+id/twentyfive"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"/>
 
@@ -122,11 +130,8 @@
         android:id="@+id/tipOut"
         android:gravity="center"
         android:hint="tip comes out"
-        android:longClickable="false"
-        android:clickable="false"
         android:cursorVisible="false"
-        android:editable="false"
-        android:inputType="none"
+        android:inputType="numberDecimal"
         android:layout_marginBottom="95dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />

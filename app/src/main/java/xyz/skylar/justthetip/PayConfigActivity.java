@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,7 +32,7 @@ public class PayConfigActivity extends ActivityBase {
     TextView tipStr;
     EditText total, tipCalc;
     SeekBar seek;
-    Button tenPerc, fifPerc, eigPerc, full;
+    Button tenPerc, fifPerc, twnPerc, twfPerc, full;
     LinearLayout ll;
     StringBuilder sb;
     Context context;
@@ -65,10 +66,10 @@ public class PayConfigActivity extends ActivityBase {
         });
 
         tipCalc = (EditText) findViewById(R.id.tipOut);
-        tipCalc.setFocusable(false);
         tenPerc = (Button) findViewById(R.id.ten);
         fifPerc = (Button) findViewById(R.id.fifteen);
-        eigPerc = (Button) findViewById(R.id.eighteen);
+        twnPerc = (Button) findViewById(R.id.twenty);
+        twfPerc = (Button) findViewById(R.id.twentyfive);
         full = (Button) findViewById(R.id.custom);
 
         /* switch for button pressing with a default to toast if total is null */
@@ -91,15 +92,24 @@ public class PayConfigActivity extends ActivityBase {
                     }
                 }
             });
-            eigPerc.setOnClickListener(new View.OnClickListener() {
+            twnPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
                         displayToast("I need a total!");
                     } else {
-                        seek.setProgress(seek.getMax() - 12);
+                        seek.setProgress(seek.getMax() - 10);
                     }
                 }
             });
+            twfPerc.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (total.getText().toString().matches("")) {
+                    displayToast("I need a total!");
+                } else {
+                    seek.setProgress(seek.getMax() - 5);
+                }
+            }
+        });
             full.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (total.getText().toString().matches("")) {
@@ -121,6 +131,30 @@ public class PayConfigActivity extends ActivityBase {
             }
         });
 
+        total.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event){
+                if(keyCode == KeyEvent.FLAG_EDITOR_ACTION){
+                    seek.setProgress(seek.getMax() - 12);
+                    setTipTotal("18");
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        total.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    if(!total.getText().toString().matches("")) {
+                        seek.setProgress(seek.getMax() - 12);
+                        setTipTotal("18");
+                    }
+                    else displayToast("Can't calculate a tip without a total");
+                }
+            }
+        });
+
         seek.setOnSeekBarChangeListener(customSeekBarListener);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -129,7 +163,6 @@ public class PayConfigActivity extends ActivityBase {
         Button saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(SaveListener);
     }
-
 
     private SeekBar.OnSeekBarChangeListener customSeekBarListener =
         new SeekBar.OnSeekBarChangeListener() {
@@ -158,13 +191,17 @@ public class PayConfigActivity extends ActivityBase {
         Method to construct the value placed in the second edit text below "tip total"
      */
     public void setTipTotal(String str){
-        double p = Double.parseDouble(str);
-        double prc = p / 100;
-        double ttl = Double.parseDouble(total.getText().toString());
-        ttl = ttl * prc;
+       /* if(total.getText().toString().matches(""))
+            displayToast("Can't calculate a tip without a total");
+        else {*/
+            double p = Double.parseDouble(str);
+            double prc = p / 100;
+            double ttl = Double.parseDouble(total.getText().toString());
+            ttl = ttl * prc;
 
-        String amt = String.format("%.2f", ttl);
-        tipCalc.setText(amt);
+            String amt = String.format("%.2f", ttl);
+            tipCalc.setText(amt);
+       // }
     }
 
     /*
@@ -209,12 +246,12 @@ public class PayConfigActivity extends ActivityBase {
         public void onClick(View view) {
             // make sure tip total is acceptable
             if (!tipCalc.getText().toString().equals(null)
-                    && !tipCalc.getText().toString().equals("0")
-                    && !tipCalc.getText().toString().equals("tip comes out")) {
+                    && !tipCalc.getText().toString().equals("")
+                    && !tipCalc.getText().toString().equals("0")) {
                 IntentIntegrator integrator = new IntentIntegrator(PayConfigActivity.this);
                 integrator.initiateScan();
             } else {
-                Toast sendToast = Toast.makeText(context, "please enter a valid tip amount", Toast.LENGTH_SHORT);
+                Toast sendToast = Toast.makeText(context, "Please enter a valid tip amount", Toast.LENGTH_SHORT);
                 sendToast.show();
             }
         }
