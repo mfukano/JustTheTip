@@ -64,8 +64,15 @@ public class PayConfigActivity extends ActivityBase {
                 return false;
             }
         });
-
         tipCalc = (EditText) findViewById(R.id.tipOut);
+        tipCalc.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(final View v, final MotionEvent event) {
+                ll.setVisibility(View.VISIBLE);
+                tipCalc.requestFocus();
+                return false;
+            }
+        });
         tenPerc = (Button) findViewById(R.id.ten);
         fifPerc = (Button) findViewById(R.id.fifteen);
         twnPerc = (Button) findViewById(R.id.twenty);
@@ -76,6 +83,7 @@ public class PayConfigActivity extends ActivityBase {
 
             tenPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    clearFocus();
                     if (total.getText().toString().matches("")) {
                         displayToast("I need a total!");
                     } else {
@@ -85,6 +93,7 @@ public class PayConfigActivity extends ActivityBase {
             });
             fifPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    clearFocus();
                     if (total.getText().toString().matches("")) {
                         displayToast("I need a total!");
                     } else {
@@ -94,6 +103,7 @@ public class PayConfigActivity extends ActivityBase {
             });
             twnPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    clearFocus();
                     if (total.getText().toString().matches("")) {
                         displayToast("I need a total!");
                     } else {
@@ -102,16 +112,18 @@ public class PayConfigActivity extends ActivityBase {
                 }
             });
             twfPerc.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (total.getText().toString().matches("")) {
-                    displayToast("I need a total!");
-                } else {
-                    seek.setProgress(seek.getMax() - 5);
+                public void onClick(View v) {
+                    clearFocus();
+                    if (total.getText().toString().matches("")) {
+                        displayToast("I need a total!");
+                    } else {
+                        seek.setProgress(seek.getMax() - 5);
+                    }
                 }
-            }
-        });
+            });
             full.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    clearFocus();
                     if (total.getText().toString().matches("")) {
                         displayToast("I need a total!");
                     } else {
@@ -124,17 +136,14 @@ public class PayConfigActivity extends ActivityBase {
         ll = (LinearLayout) findViewById(R.id.keyboard_overlay);
         ll.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(total.getWindowToken(), 0);
-                ll.setVisibility(View.GONE);
-                total.clearFocus();
+                clearFocus();
             }
         });
 
         total.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event){
-                if(keyCode == KeyEvent.FLAG_EDITOR_ACTION){
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.FLAG_EDITOR_ACTION) {
                     seek.setProgress(seek.getMax() - 12);
                     setTipTotal("18");
                     return true;
@@ -145,12 +154,11 @@ public class PayConfigActivity extends ActivityBase {
 
         total.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    if(!total.getText().toString().matches("")) {
+                if (!hasFocus) {
+                    if (!total.getText().toString().matches("")) {
                         seek.setProgress(seek.getMax() - 12);
                         setTipTotal("18");
                     }
-                    else displayToast("Can't calculate a tip without a total");
                 }
             }
         });
@@ -168,9 +176,7 @@ public class PayConfigActivity extends ActivityBase {
         new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seek, int progress, boolean fromUsr) {
-                if (total.getText().toString().matches("")) {
-                    displayToast("Buddy, you can't move the slider if you don't have a total.");
-                } else {
+                if (!total.getText().toString().matches("")) {
                     progress = progress + 10;
                     String str = Integer.toString(progress);
                     sb = new StringBuilder();
@@ -181,12 +187,26 @@ public class PayConfigActivity extends ActivityBase {
                 }
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
+                clearFocus();
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (total.getText().toString().matches("")) {
+                    displayToast("Can't move the slider if you don't have a total");
+                }
             }
 
         };
+
+    public void clearFocus(){
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(total.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(tipCalc.getWindowToken(), 0);
+        ll.setVisibility(View.GONE);
+        total.clearFocus();
+        tipCalc.clearFocus();
+    }
+
     /*
         Method to construct the value placed in the second edit text below "tip total"
      */
