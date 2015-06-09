@@ -167,6 +167,9 @@ public class SplitActivity extends ActivityBase {
                     }
                 });
             }
+
+            // Seekbar snapping logic
+
             le.msb = (SeekBar) newView.findViewById(R.id.splitSeekBar);
             le.msb.setProgress(le.percent);
             le.msb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -174,8 +177,6 @@ public class SplitActivity extends ActivityBase {
                 boolean status;
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    //Log.d("onProgressChanged", "prog: " + prog);
-                    //updateTotal();
                     prog = progress;
                     le.amount = 0.0;
                     if(progress > 0){
@@ -183,7 +184,6 @@ public class SplitActivity extends ActivityBase {
                         le.amount = result;
                         TextView amt = (TextView) newView.findViewById(R.id.amount);
                         amt.setText(String.format("$%.2f", result));
-                        //Log.d("onProgressChanged", "set amount to: " + result);
                     }
                     le.percent = prog;
                     le.msb.setProgress(prog);
@@ -225,6 +225,7 @@ public class SplitActivity extends ActivityBase {
         }
     }
 
+    // Rounding helper method for Seekbar snapping
     private double roundUp(double d) {
         double result = (double)Math.round(d * 100) / 100;
         //Log.d("roundUp","rounded " + d +" to " + result);
@@ -232,6 +233,7 @@ public class SplitActivity extends ActivityBase {
 
     }
 
+    // Delete a splitting contributor method
     private void removeSplitter(String name) {
         int count = aa.getCount();
         for (int j = 0; j < count; j++) {
@@ -257,6 +259,7 @@ public class SplitActivity extends ActivityBase {
         integrator.initiateScan();
     }
 
+    // Add splitter method
     private void addSomeone(String text, String email, Bitmap profilePic, boolean isPrimary) {
         ListElement ael = new ListElement();
         ael.textLabel = text;
@@ -294,6 +297,7 @@ public class SplitActivity extends ActivityBase {
             }
         }
     }
+    // Get info from Venmo
     private class GetProfilePic extends AsyncTask<String, Void, Bitmap> {
         public Bitmap profilePic = null;
         public String name;
@@ -331,28 +335,18 @@ public class SplitActivity extends ActivityBase {
             double amount;
             try{
                 DecimalFormat df = new DecimalFormat("0.00");
-                //percent = aa.getItem(j).percent;
-                //aa.getItem(j).amount = (total*(percent/100));
                 amount = aa.getItem(j).amount;
                 split += amount;
-                //Log.d("updateTotal", "amount: " + amount);
                 split = roundUp(split);
                 remainingAmount = roundUp(total - split);
                 TextView tv = (TextView) findViewById(R.id.remaining);
                 if(roundUp(remainingAmount) == 0.0) {
                     tv.setTextColor(Color.parseColor("#009688"));
-
-                    /*aa.getItem(j).amount += remainingAmount;
-                    remainingAmount = 0.0;
-                    updateTotal();*/
                 }else{
                     tv.setTextColor(Color.RED);
                 }
                 TextView rm = (TextView) findViewById(R.id.remaining);
                 rm.setText("remaining: $" + df.format(remainingAmount));
-                //aa.notifyDataSetChanged();
-                //ListView lv = (ListView) findViewById(R.id.listView);
-                //lv.invalidateViews();
 
             }catch(IndexOutOfBoundsException e) {
                 Log.i("","Out of bounds: " + j);
