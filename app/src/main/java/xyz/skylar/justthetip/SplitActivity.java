@@ -207,7 +207,6 @@ public class SplitActivity extends ActivityBase {
                     if(true) {
                         double result = roundUp((total * (prog / 100.0)));
                         le.amount = result;
-                        //Log.d("onStopTrackingTouch", "set amount to: " + result);
                     }
                     le.percent = prog;
                     updateTotal();
@@ -228,7 +227,6 @@ public class SplitActivity extends ActivityBase {
     // Rounding helper method for Seekbar snapping
     private double roundUp(double d) {
         double result = (double)Math.round(d * 100) / 100;
-        //Log.d("roundUp","rounded " + d +" to " + result);
         return result;
 
     }
@@ -362,7 +360,6 @@ public class SplitActivity extends ActivityBase {
                 Log.i("",listElement.email + " is the host, skipping");
             }else{
                 Log.i("","Would request $" + String.format("%.2f",listElement.amount) + " from " +listElement.email);
-                //PayConfigActivity.makeAPIcall(listElement.email, String.format("%.2f",listElement.amount));
                 String params[] = {MainActivity.authCode, listElement.email, String.format("%.2f",(-1.0)*listElement.amount)};
                 new MakePayment(context, SplitActivity.this).execute(params);
             }
