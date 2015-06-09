@@ -212,13 +212,18 @@ public class SlidingTabsFragment extends Fragment {
                             container, false);
                     container.addView(view);
                     TextView tv = (TextView) view.findViewById(R.id.textView);
+                    TextView uname = (TextView) view.findViewById(R.id.uName);
+                    TextView email = (TextView) view.findViewById(R.id.eMail);
+                    TextView phone = (TextView) view.findViewById(R.id.phoneNum);
                     ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
 
                     if (MainActivity.authCode != null && GetMyInfo.userInfo != null) {
                         String usr_data = GetMyInfo.userInfo;
-
                         profilePic.setImageBitmap(GetMyInfo.PICTURE);
                         tv.setText(GetMyInfo.DISPLAY_NAME);
+                        uname.setText(GetMyInfo.USERNAME);
+                        email.setText(GetMyInfo.EMAIL);
+                        phone.setText(GetMyInfo.PHONE);
                     }
                     return view;
                 default:
