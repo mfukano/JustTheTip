@@ -7,14 +7,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,13 +41,14 @@ public class MakePayment extends AsyncTask<String, Void, String> {
         final String authCode = params[0];
         final String email = params[1];
         final String amount = params[2];
+        final String note = params[3];
 
         String jsonResultString = "null";
         // build up query url
         String queryString = VENMO_PREFIX + VENMO_PAYMENT + authCode
                            + VENMO_EMAIL + email
                            + VENMO_AMOUNT + amount
-                           + VENMO_NOTE + "Delivery";
+                           + VENMO_NOTE + note;
 
 
         HttpClient httpClient = new DefaultHttpClient();

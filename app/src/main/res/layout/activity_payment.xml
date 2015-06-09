@@ -43,7 +43,8 @@
         android:layout_marginBottom="61dp"
         android:layout_above="@+id/LinearLayout02"
         android:layout_centerHorizontal="true"
-        android:cursorVisible="false"/>
+        android:cursorVisible="false"
+        android:textColor="@color/button_material_dark" />
     <LinearLayout
         android:id="@+id/LinearLayout02"
         android:layout_height="wrap_content"
@@ -144,7 +145,8 @@
         android:inputType="numberDecimal"
         android:layout_marginBottom="95dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/button_material_dark" />
 
     <LinearLayout
         android:orientation="horizontal"

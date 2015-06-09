@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ public class PayConfigActivity extends ActivityBase {
     Context context;
     Toast toast;
     Intent resultIntent;
+    private String note = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +74,11 @@ public class PayConfigActivity extends ActivityBase {
         tipCalc = (EditText) findViewById(R.id.tipOut);
 
         Button send = (Button) findViewById(R.id.sendButton);
-        send.setBackgroundColor(0xFF01579B);
+        send.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         Button split = (Button) findViewById(R.id.splitButton);
         Button save = (Button) findViewById(R.id.saveButton);
-        split.setBackgroundColor(0xFF01579B);
-        save.setBackgroundColor(0xFF01579B);
+        split.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        save.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         total.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -258,12 +260,17 @@ public class PayConfigActivity extends ActivityBase {
     // confirmation of payment dialog after QR scan
     public AlertDialog createDialog (final String recipient, final String email, final String amount) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Send " + amount + " to " + recipient + "?")
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setMessage("Send " + amount + " to " + recipient + "?\nEnter note:")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // send money w/ api call
-                        makeAPIcall(email, amount);
+                        note = input.getText().toString();
+                        makeAPIcall(email, amount, note);
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -387,8 +394,8 @@ public class PayConfigActivity extends ActivityBase {
         }
     }
 
-    public void makeAPIcall (String email, String amount) {
-        String params[] = {MainActivity.authCode, email, amount};
+    public void makeAPIcall (String email, String amount, String note) {
+        String params[] = {MainActivity.authCode, email, amount, note};
         new MakePayment(context, PayConfigActivity.this).execute(params);
     }
 
