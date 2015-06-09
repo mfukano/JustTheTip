@@ -103,9 +103,6 @@ public class SlidingTabsLayout extends HorizontalScrollView {
     }
 
     /**
-     * Set the {@link ViewPager.OnPageChangeListener}. When using {@link SlidingTabLayout} you are
-     * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
-     * that the layout can update it's scroll position correctly.
      *
      * @see ViewPager#setOnPageChangeListener(ViewPager.OnPageChangeListener)
      */
@@ -152,7 +149,7 @@ public class SlidingTabsLayout extends HorizontalScrollView {
 
         TextView textView = new TextView(context);
         textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
+        textView.setTextSize(18);
         textView.setTypeface(Typeface.DEFAULT);
         textView.setWidth(size.x / 3);
 
@@ -173,7 +170,7 @@ public class SlidingTabsLayout extends HorizontalScrollView {
         */
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
-        textView.setPadding(padding, padding/3, padding, padding/3);
+        textView.setPadding(padding, padding/5, padding, padding/3);
 
         return textView;
     }

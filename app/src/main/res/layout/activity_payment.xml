@@ -29,7 +29,8 @@
         android:text="order total"
         android:id="@+id/totalText"
         android:layout_above="@+id/totalInput"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -58,7 +59,8 @@
             android:text="10%"
             android:id="@+id/ten"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/button_material_dark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -66,7 +68,8 @@
             android:text="15%"
             android:id="@+id/fifteen"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/button_material_dark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -74,7 +77,8 @@
             android:text="20%"
             android:id="@+id/twenty"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/button_material_dark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -82,7 +86,8 @@
             android:text="25%"
             android:id="@+id/twentyfive"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/button_material_dark" />
 
         <Button
             android:layout_width="wrap_content"
@@ -90,7 +95,8 @@
             android:text="all in!"
             android:id="@+id/custom"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/button_material_dark" />
     </LinearLayout>
 
     <SeekBar
@@ -114,7 +120,8 @@
         android:id="@+id/tipTracker"
         android:layout_below="@+id/seekBar"
         android:layout_centerHorizontal="true"
-        android:text="10%" />
+        android:text="10%"
+        android:textSize="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -123,7 +130,8 @@
         android:text="tip total"
         android:id="@+id/tipHeader"
         android:layout_above="@+id/tipOut"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp" />
 
     <EditText
         android:layout_width="wrap_content"

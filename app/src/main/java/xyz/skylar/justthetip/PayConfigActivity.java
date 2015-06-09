@@ -68,11 +68,11 @@ public class PayConfigActivity extends ActivityBase {
         tipCalc = (EditText) findViewById(R.id.tipOut);
 
         Button send = (Button) findViewById(R.id.sendButton);
-        send.setBackgroundColor(0xFF01579B);
+        send.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         Button split = (Button) findViewById(R.id.splitButton);
         Button save = (Button) findViewById(R.id.saveButton);
-        split.setBackgroundColor(0xFF01579B);
-        save.setBackgroundColor(0xFF01579B);
+        split.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        save.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         total.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -350,8 +350,8 @@ public class PayConfigActivity extends ActivityBase {
             send.setBackgroundColor(0xFF009688);
             Button split = (Button) findViewById(R.id.splitButton);
             Button save = (Button) findViewById(R.id.saveButton);
-            split.setBackgroundColor(0xFF222222);
-            save.setBackgroundColor(0xFF222222);
+            split.setBackgroundColor(0xFF888888);
+            save.setBackgroundColor(0xFF888888);
 
         }else if (result != null) {
             String contents = result.getContents();

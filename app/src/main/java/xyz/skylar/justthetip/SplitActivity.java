@@ -67,11 +67,11 @@ public class SplitActivity extends ActivityBase {
         DecimalFormat df = new DecimalFormat("0.00");
         remaining.setText("remaining: "+String.format("$%.2f",total));
         Button evenSplit = (Button) findViewById(R.id.evenSplit);
-        evenSplit.setBackgroundColor(0xFF01579B);
+        evenSplit.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         Button add = (Button) findViewById(R.id.button3);
         Button next = (Button) findViewById(R.id.nextButton);
-        add.setBackgroundColor(0xFF01579B);
-        next.setBackgroundColor(0xFF01579B);
+        add.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        next.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         evenSplit.setOnClickListener(EvenSplitListener);
         addSomeone(name, GetMyInfo.EMAIL, profilePic, true);
         SplitActivity.this.setResult(Activity.RESULT_CANCELED, resultIntent);
@@ -153,7 +153,7 @@ public class SplitActivity extends ActivityBase {
             }
             // Fills in the message.
             TextView mtv = (TextView) newView.findViewById(R.id.testText);
-            mtv.setText(le.textLabel);
+            mtv.setText(le.textLabel.toString().split(" ", 2)[0].toLowerCase());
             ImageView iv = (ImageView) newView.findViewById(R.id.profilePic);
             iv.setImageBitmap(le.profilePic);
             Button mb = (Button) newView.findViewById(R.id.removeSplitter);

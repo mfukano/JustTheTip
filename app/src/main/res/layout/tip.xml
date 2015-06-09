@@ -10,7 +10,9 @@
     android:text="new tip"
     android:id="@+id/newTip"
     android:gravity="center"
-    android:layout_weight="1"/>
+    android:layout_weight="1"
+        android:textColor="@color/button_material_dark"
+        android:textSize="25dp" />
 
     <!--TextView
         android:layout_width="match_parent"
