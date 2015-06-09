@@ -7,7 +7,7 @@
     style="?android:attr/borderlessButtonStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="New "
+    android:text="new tip"
     android:id="@+id/newTip"
     android:gravity="center"
     android:layout_weight="1"/>
