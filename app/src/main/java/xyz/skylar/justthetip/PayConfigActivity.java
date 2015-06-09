@@ -41,6 +41,8 @@ public class PayConfigActivity extends ActivityBase {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_payment);
+        context = this;
 
         if (savedInstanceState != null){
             String totIn = savedInstanceState.getString("tot_IN");
@@ -52,18 +54,25 @@ public class PayConfigActivity extends ActivityBase {
             tipStr.setText(tipPerc);
             tipCalc.setText(tipOut);
         }
-        context = this;
         //FF01579B
-        setContentView(R.layout.activity_payment);
+
+        tenPerc = (Button) findViewById(R.id.ten);
+        fifPerc = (Button) findViewById(R.id.fifteen);
+        twnPerc = (Button) findViewById(R.id.twenty);
+        twfPerc = (Button) findViewById(R.id.twentyfive);
+        full = (Button) findViewById(R.id.custom);
+
+        seek = (SeekBar) findViewById(R.id.seekBar);
+        tipStr = (TextView) findViewById(R.id.tipTracker);
+        total = (EditText) findViewById(R.id.totalInput);
+        tipCalc = (EditText) findViewById(R.id.tipOut);
+
         Button send = (Button) findViewById(R.id.sendButton);
         send.setBackgroundColor(0xFF01579B);
         Button split = (Button) findViewById(R.id.splitButton);
         Button save = (Button) findViewById(R.id.saveButton);
         split.setBackgroundColor(0xFF01579B);
         save.setBackgroundColor(0xFF01579B);
-        seek = (SeekBar) findViewById(R.id.seekBar);
-        tipStr = (TextView) findViewById(R.id.tipTracker);
-        total = (EditText) findViewById(R.id.totalInput);
         total.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -72,7 +81,6 @@ public class PayConfigActivity extends ActivityBase {
                 return false;
             }
         });
-        tipCalc = (EditText) findViewById(R.id.tipOut);
         tipCalc.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -81,11 +89,6 @@ public class PayConfigActivity extends ActivityBase {
                 return false;
             }
         });
-        tenPerc = (Button) findViewById(R.id.ten);
-        fifPerc = (Button) findViewById(R.id.fifteen);
-        twnPerc = (Button) findViewById(R.id.twenty);
-        twfPerc = (Button) findViewById(R.id.twentyfive);
-        full = (Button) findViewById(R.id.custom);
 
         /* switch for button pressing with a default to toast if total is null */
 
@@ -305,9 +308,7 @@ public class PayConfigActivity extends ActivityBase {
         String tipOut = savedInstanceState.getString("tip_OUT");
 
 
-        if((seekProg < 10 || seekProg > 30) || totIn == null || tipPerc == 0 || tipOut == null){
-            // it's bullshit, there's no saved state
-        }else{
+        if(!((seekProg < 10 || seekProg > 30) || totIn == null || tipPerc == 0 || tipOut == null)){
             // restores saved stuff
             total.setText(totIn);
             seek.setProgress(seekProg);

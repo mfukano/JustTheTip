@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme"
         android:screenOrientation="portrait">
 
+
         <!-- android:theme="@style/AppTheme" -->
 
         <activity

@@ -3,6 +3,7 @@ package xyz.skylar.justthetip;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,9 +12,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import android.widget.FrameLayout;
 
 
 public class LoginActivity extends Activity {
@@ -24,6 +23,7 @@ public class LoginActivity extends Activity {
     ProgressDialog pDialog;
     Boolean showingPD = false;
     WebView myWebView;
+    protected FrameLayout webViewPlaceholder;
 
     //Overrides the back button so that we can go to the last page instead of back to MainActivity
     @Override
@@ -39,11 +39,30 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        initUI();
+    }
+
+    protected void initUI(){
         myWebView = (WebView) findViewById(R.id.webView1);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         myWebView.setWebViewClient(new MyWebViewClient());
         myWebView.loadUrl(getIntentMessage());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        if (myWebView != null)
+        {
+            // Remove the WebView from the old placeholder
+            webViewPlaceholder.removeView(myWebView);
+        }
+        super.onConfigurationChanged(newConfig);
+
+        // Reinitialize the UI
+        initUI();
     }
 
     private class MyWebViewClient extends WebViewClient {
@@ -60,7 +79,7 @@ public class LoginActivity extends Activity {
             super.onPageFinished(view, url);
             hideProgressDialog();
             Log.i("", "~~~URL: " + url);
-            if (url.contains("?access_token=") && authComplete != true) {
+            if (url.contains("?access_token=") && !authComplete) {
                 Uri uri = Uri.parse(url);
                 authCode = uri.getQueryParameter("access_token");
                 Log.i("", "~~~CODE : " + authCode);
@@ -100,8 +119,30 @@ public class LoginActivity extends Activity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        // Save the state of the WebView
+        myWebView.saveState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore the state of the WebView
+        myWebView.restoreState(savedInstanceState);
+    }
+
+
+/*
+    @Override
     public void onPause() {
-        hideProgressDialog();
+        super.onPause();
+            hideProgressDialog();
+
         Method pause = null;
         try {
             pause = WebView.class.getMethod("onPause");
@@ -127,8 +168,7 @@ public class LoginActivity extends Activity {
             myWebView.clearView();
             myWebView.loadUrl(WEBPAGE_NOTHING);
         }
-        super.onPause();
-    }
+    }*/
 
     //returns the url passed to the activity from the main activity, in this case the URL to go to
     private String getIntentMessage() {
@@ -142,7 +182,9 @@ public class LoginActivity extends Activity {
         }
     }
     private void hideProgressDialog() {
-        pDialog.dismiss();
-        showingPD = false;
+        if(pDialog != null) {
+            pDialog.dismiss();
+            showingPD = false;
+        }
     }
 }
