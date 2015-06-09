@@ -1,5 +1,7 @@
 package xyz.skylar.justthetip;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -37,6 +39,18 @@ public class GetMyInfo extends AsyncTask<String, Void, String> {
 
     private static final String VENMO_PREFIX = "https://api.venmo.com/v1/";
     private static final String VENMO_ME = "me?access_token=";
+
+    public Context mContext;
+    public GetMyInfo(Context context) {
+        mContext = context;
+    }
+
+    public ProgressDialog progressDialog;
+
+    public void onPreExecute() {
+        progressDialog = ProgressDialog.show(mContext, "", "Getting user info...");
+        super.onPreExecute();
+    }
 
     public void ParseJSON (String json) {
         try {
@@ -121,5 +135,10 @@ public class GetMyInfo extends AsyncTask<String, Void, String> {
     public void onPostExecute (String result) {
         //Log.i (" ***JSON RESULT***", result);
         userJSON = result;
+        Log.i("GMI", userInfo);
+        if (progressDialog!=null) {
+            progressDialog.dismiss();
+        }
+        SlidingTabsFragment.refreshFragments();
     }
 }

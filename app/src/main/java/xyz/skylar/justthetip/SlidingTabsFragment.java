@@ -1,5 +1,6 @@
 package xyz.skylar.justthetip;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,7 +24,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
  * Created by Skylar on 5/28/2015.
  */
 public class SlidingTabsFragment extends Fragment {
-
     static final String LOG_TAG = "SlidingTabsFragment";
 
     static final int NO_SPLIT_REQUEST = 2;
@@ -41,6 +41,7 @@ public class SlidingTabsFragment extends Fragment {
      * A {@link ViewPager} which will be used in conjunction with the {@link SlidingTabsLayout} above.
      */
     private ViewPager mViewPager;
+    private static SamplePagerAdapter mAdapter;
 
     // this makes it so we can display the return result of the QR scan in the fragment
     public final class FragmentIntegrator extends IntentIntegrator {
@@ -83,7 +84,9 @@ public class SlidingTabsFragment extends Fragment {
         // BEGIN_INCLUDE (setup_viewpager)
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        mViewPager.setAdapter(new SamplePagerAdapter());
+        mAdapter = new SamplePagerAdapter();
+        //mViewPager.setAdapter(new SamplePagerAdapter());
+        mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(1);
         // END_INCLUDE (setup_viewpager)
 
@@ -104,6 +107,10 @@ public class SlidingTabsFragment extends Fragment {
      */
     class SamplePagerAdapter extends PagerAdapter {
 
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
         /**
          * @return the number of pages to display
          */
@@ -161,18 +168,22 @@ public class SlidingTabsFragment extends Fragment {
                     Button btn = (Button) view.findViewById(R.id.login);
                     ImageView qrImage = (ImageView) view.findViewById(R.id.qrCode);
                     qrImage.setVisibility(View.INVISIBLE);
+                    Bitmap qr_bitmap = null;
+                    if (GetMyInfo.userInfo != null)
+                        Log.i ("GetMyInfo.userInfo", GetMyInfo.userInfo);
+                    else
+                        Log.i ("GetMyInfo.userInfo", "NULL");
 
-                    if (MainActivity.authCode != null) {
+                    if (MainActivity.authCode != null && GetMyInfo.userInfo != null) {
                         String qr_data = GetMyInfo.userInfo;
                         int qr_dimension = 500;
-                        //Log.i ("QR DATA", qr_data);
 
                         QRCodeGen qrCodeGen = new QRCodeGen(qr_data, null, Contents.Type.TEXT,
                                 BarcodeFormat.QR_CODE.toString(), qr_dimension);
 
                         // create and display the QR bitmap
                         try {
-                            Bitmap qr_bitmap = qrCodeGen.encodeAsBitmap();
+                            qr_bitmap = qrCodeGen.encodeAsBitmap();
                             qrImage.setImageBitmap(qr_bitmap);
                             btn.setVisibility(View.GONE);
                             qrImage.setVisibility(View.VISIBLE);
@@ -244,7 +255,7 @@ public class SlidingTabsFragment extends Fragment {
                 Intent intent = new Intent(context, PayConfigActivity.class);
                 startActivityForResult(intent, NO_SPLIT_REQUEST);
             }
-        };
+         };
 
         /**
          * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
@@ -254,5 +265,10 @@ public class SlidingTabsFragment extends Fragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+
+    }
+
+    public static void refreshFragments() {
+        mAdapter.notifyDataSetChanged();
     }
 }

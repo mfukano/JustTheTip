@@ -46,6 +46,10 @@ public class MainActivity extends ActivityBase {
     private Context context;
     Button newTip;
 
+    // progress dialog to display after logging in while pictures, etc. are being set
+    ProgressDialog progressDialog;
+    Boolean progressShowing = false;
+
     // Whether the Log Fragment is currently shown
     private boolean mLogShown;
     FragmentManager fm;
@@ -81,8 +85,10 @@ public class MainActivity extends ActivityBase {
                /* TextView token = (TextView) findViewById(R.id.textView4);
                 token.setText(result);*/
                 authCode = result;
+                // set progress dialog
+                // showDialog();
                 // calls AsyncTask class to make an API call
-                new GetMyInfo().execute(authCode);
+                new GetMyInfo(context).execute(authCode);
             }
             if (resultCode == RESULT_CANCELED) {
                 Log.i("", "~~~No token");
@@ -113,6 +119,18 @@ public class MainActivity extends ActivityBase {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.putExtra(destination, AUTH_URL);
         startActivityForResult(intent, 1);
+    }
+
+    public void showDialog() {
+        if (!progressShowing) {
+            progressDialog = ProgressDialog.show(context, "", "Just a moment...", false);
+            progressShowing = true;
+        }
+    }
+
+    public void hideDialog() {
+        progressDialog.dismiss();
+        progressShowing = false;
     }
 
 }
