@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -30,7 +31,7 @@ import java.math.BigDecimal;
 /**
  * Created by matfukano on 5/31/15.
  */
-public class PayConfigActivity extends ActivityBase {
+public class PayConfigActivity extends Activity {
     TextView tipStr;
     EditText total, tipCalc;
     SeekBar seek;
@@ -72,6 +73,8 @@ public class PayConfigActivity extends ActivityBase {
         tipStr = (TextView) findViewById(R.id.tipTracker);
         total = (EditText) findViewById(R.id.totalInput);
         tipCalc = (EditText) findViewById(R.id.tipOut);
+
+        // LoadPrefs();
 
         Button send = (Button) findViewById(R.id.sendButton);
         send.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
@@ -305,8 +308,25 @@ public class PayConfigActivity extends ActivityBase {
         public void onClick(View view){
             setResult(Activity.RESULT_OK, resultIntent);
             // TODO: FIGURE OUT LOGIC
+            /*
+            SharedPreferences sharedPreferences = context.getSharedPreferences("pay", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("totIn", total.getText().toString());
+            editor.commit();
+            finish();
+            */
+            Toast.makeText(context, "Save coming soon!", Toast.LENGTH_LONG).show();
         }
     };
+
+    private void LoadPrefs() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("pay", MODE_PRIVATE);
+        String TOTAL = "butt";
+        TOTAL = sharedPreferences.getString("totIn", "NULL");
+        Log.i("~~~~~~~~~~~~~~", TOTAL);
+        //if (TOTAL != null) total.setText(TOTAL);
+        total.setText(TOTAL);
+    }
 
 
     protected void onSavedInstanceState(Bundle savedInstanceState) {
