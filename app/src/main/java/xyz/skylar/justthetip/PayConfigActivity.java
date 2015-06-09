@@ -26,8 +26,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
-
 /**
  * Created by matfukano on 5/31/15.
  */
@@ -76,12 +74,15 @@ public class PayConfigActivity extends Activity {
 
         // LoadPrefs();
 
+
         Button send = (Button) findViewById(R.id.sendButton);
         send.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         Button split = (Button) findViewById(R.id.splitButton);
         Button save = (Button) findViewById(R.id.saveButton);
         split.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
         save.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+
+        // Allow user to tap off EditText
         total.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -99,8 +100,8 @@ public class PayConfigActivity extends Activity {
             }
         });
 
-        /* switch for button pressing with a default to toast if total is null */
-
+        /* button onClick logic */
+            // ten percent
             tenPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     clearFocus();
@@ -111,6 +112,7 @@ public class PayConfigActivity extends Activity {
                     }
                 }
             });
+            // fifteen percent
             fifPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     clearFocus();
@@ -121,6 +123,7 @@ public class PayConfigActivity extends Activity {
                     }
                 }
             });
+            // twenty percent
             twnPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     clearFocus();
@@ -131,6 +134,7 @@ public class PayConfigActivity extends Activity {
                     }
                 }
             });
+            // twenty five percent
             twfPerc.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     clearFocus();
@@ -160,6 +164,7 @@ public class PayConfigActivity extends Activity {
             }
         });
 
+        // Default tip % to 18% when the user presses enter on the soft keyboard
         total.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -172,6 +177,7 @@ public class PayConfigActivity extends Activity {
             }
         });
 
+        // Default tip % to 18% when the user taps off the total editText
         total.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
@@ -192,6 +198,7 @@ public class PayConfigActivity extends Activity {
         saveButton.setOnClickListener(SaveListener);
     }
 
+    // Tip % slider logic
     private SeekBar.OnSeekBarChangeListener customSeekBarListener =
         new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -218,6 +225,7 @@ public class PayConfigActivity extends Activity {
 
         };
 
+    // Removes focus from a selected element
     public void clearFocus(){
         final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(total.getWindowToken(), 0);
@@ -244,15 +252,7 @@ public class PayConfigActivity extends Activity {
        }
     }
 
-    /*
-        Rounding helper method to clean up the float.
-     */
-    public static float round(float d, int decimalPlace) {
-        BigDecimal bd = new BigDecimal(Float.toString(d));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return bd.floatValue();
-    }
-
+    // Toast helper method
     public void displayToast(String message) {
         if(toast != null)
             toast.cancel();
@@ -328,7 +328,12 @@ public class PayConfigActivity extends Activity {
         total.setText(TOTAL);
     }
 
-
+    /*
+        Recovers tip info if tip is destroyed
+        Tried to use this to pass data with startActivityForResult but
+        we didn't read the documentation; if you use finish() it destroys
+        the activity and you can't recover the data.
+     */
     protected void onSavedInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -348,6 +353,7 @@ public class PayConfigActivity extends Activity {
         }
     }
 
+    // Recovers information from destroy (same as above)
     protected void onResumeInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         String totIn = total.getText().toString();
@@ -414,11 +420,13 @@ public class PayConfigActivity extends Activity {
         }
     }
 
+    // Makes the appropriate API call depending on the action
     public void makeAPIcall (String email, String amount, String note) {
         String params[] = {MainActivity.authCode, email, amount, note};
         new MakePayment(context, PayConfigActivity.this).execute(params);
     }
 
+    // Launches split activity upon pressing the split button
     public void splitActivity(View v){
         EditText et = (EditText) findViewById(R.id.tipOut);
         try{
