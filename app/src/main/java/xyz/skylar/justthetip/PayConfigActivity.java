@@ -1,5 +1,6 @@
 package xyz.skylar.justthetip;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,12 +38,15 @@ public class PayConfigActivity extends ActivityBase {
     StringBuilder sb;
     Context context;
     Toast toast;
+    Intent resultIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         context = this;
+        resultIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, resultIntent);
 
         if (savedInstanceState != null){
             String totIn = savedInstanceState.getString("tot_IN");
@@ -68,11 +72,11 @@ public class PayConfigActivity extends ActivityBase {
         tipCalc = (EditText) findViewById(R.id.tipOut);
 
         Button send = (Button) findViewById(R.id.sendButton);
-        send.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        send.setBackgroundColor(0xFF01579B);
         Button split = (Button) findViewById(R.id.splitButton);
         Button save = (Button) findViewById(R.id.saveButton);
-        split.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
-        save.setBackgroundColor(getResources().getColor(R.color.apptheme_color));
+        split.setBackgroundColor(0xFF01579B);
+        save.setBackgroundColor(0xFF01579B);
         total.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -292,14 +296,13 @@ public class PayConfigActivity extends ActivityBase {
     View.OnClickListener SaveListener = new View.OnClickListener(){
         @Override
         public void onClick(View view){
-            Intent resultIntent = new Intent();
-            setResult(2, resultIntent);
-            finish();
+            setResult(Activity.RESULT_OK, resultIntent);
+            // TODO: FIGURE OUT LOGIC
         }
     };
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+    protected void onSavedInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         String totIn = savedInstanceState.getString("tot_IN");
@@ -314,12 +317,11 @@ public class PayConfigActivity extends ActivityBase {
             seek.setProgress(seekProg);
             tipStr.setText(tipPerc);
             tipCalc.setText(tipOut);
-
+            Log.i("GGGGG", "On Restore");
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onResumeInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         String totIn = total.getText().toString();
         outState.putString("tot_IN", totIn);
@@ -334,6 +336,7 @@ public class PayConfigActivity extends ActivityBase {
 
         String tipOut = tipCalc.getText().toString();
         outState.putString("tip_OUT", tipOut);
+        Log.i("GGGGG", "On Save");
     }
 
     // result from the QR code scan above
@@ -350,8 +353,8 @@ public class PayConfigActivity extends ActivityBase {
             send.setBackgroundColor(0xFF009688);
             Button split = (Button) findViewById(R.id.splitButton);
             Button save = (Button) findViewById(R.id.saveButton);
-            split.setBackgroundColor(0xFF888888);
-            save.setBackgroundColor(0xFF888888);
+            split.setBackgroundColor(0xFF222222);
+            save.setBackgroundColor(0xFF009688);
 
         }else if (result != null) {
             String contents = result.getContents();

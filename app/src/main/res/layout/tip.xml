@@ -14,6 +14,16 @@
         android:textColor="@color/button_material_dark"
         android:textSize="25dp" />
 
+    <Button
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saved Tip"
+        android:id="@+id/restore"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_weight="1"/>
+
     <!--TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

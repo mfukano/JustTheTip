@@ -137,39 +137,6 @@ public class LoginActivity extends Activity {
     }
 
 
-/*
-    @Override
-    public void onPause() {
-        super.onPause();
-            hideProgressDialog();
-
-        Method pause = null;
-        try {
-            pause = WebView.class.getMethod("onPause");
-        } catch (SecurityException e) {
-            // Nothing
-        } catch (NoSuchMethodException e) {
-            // Nothing
-        }
-        if (pause != null) {
-            try {
-                pause.invoke(myWebView);
-            } catch (InvocationTargetException e) {
-            } catch (IllegalAccessException e) {
-            }
-        } else {
-            // No such method.  Stores the current URL.
-            String suspendUrl = myWebView.getUrl();
-            //SharedPreferences settings = getSharedPreferences(MainActivity.MYPREFS, 0);
-            //SharedPreferences.Editor ed = settings.edit();
-            //ed.putString(PREF_URL, suspendUrl);
-            //ed.commit();
-            // And loads a URL without any processing.
-            myWebView.clearView();
-            myWebView.loadUrl(WEBPAGE_NOTHING);
-        }
-    }*/
-
     //returns the url passed to the activity from the main activity, in this case the URL to go to
     private String getIntentMessage() {
         Intent intent = getIntent();
