@@ -78,6 +78,7 @@ public class MainActivity extends ActivityBase {
     // after logging into venmo, this is called
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 String result = data.getStringExtra("code");
@@ -92,6 +93,14 @@ public class MainActivity extends ActivityBase {
             }
             if (resultCode == RESULT_CANCELED) {
                 Log.i("", "~~~No token");
+            }
+        }
+        if (requestCode == 6){
+            if(resultCode == RESULT_OK){
+
+            }
+            if(resultCode == RESULT_CANCELED){
+
             }
         }
     }

@@ -1,6 +1,6 @@
 package xyz.skylar.justthetip;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * Created by Skylar on 5/28/2015.
@@ -26,10 +27,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 public class SlidingTabsFragment extends Fragment {
     static final String LOG_TAG = "SlidingTabsFragment";
 
-    static final int NO_SPLIT_REQUEST = 2;
-    static final int SPLIT_REQUEST = 3;
+    static final int SAVE_REQUEST = 6;
 
     Context context;
+    Boolean setSaveVis = false;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
@@ -205,6 +206,17 @@ public class SlidingTabsFragment extends Fragment {
                     Button newTip = (Button) view.findViewById(R.id.newTip);
                     newTip.setOnClickListener(NewTipListener);
 
+                    Button restore = (Button) view.findViewById(R.id.restore);
+                    if(setSaveVis){
+                        restore.setVisibility(View.VISIBLE);
+                    }
+                    restore.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            Intent i = new Intent(getActivity(), PayConfigActivity.class);
+                            startActivity(i);
+                        }
+                    });
+
                     return view;
 
                 case "you":
@@ -242,20 +254,12 @@ public class SlidingTabsFragment extends Fragment {
             public void onClick(View view) {
                 if (MainActivity.authCode != null) {
                     Intent intent = new Intent(getActivity(), PayConfigActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, SAVE_REQUEST);
                 } else {
                     mViewPager.setCurrentItem(0);
                 }
             }
         };
-
-         View.OnClickListener tipForResult = new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(context, PayConfigActivity.class);
-                startActivityForResult(intent, NO_SPLIT_REQUEST);
-            }
-         };
 
         /**
          * Destroy the item from the {@link ViewPager}. In our case this is simply removing the
@@ -266,6 +270,20 @@ public class SlidingTabsFragment extends Fragment {
             container.removeView((View) object);
         }
 
+    }
+
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(requestCode == 6){
+            if(resultCode == Activity.RESULT_OK){
+                setSaveVis = true;
+                refreshFragments();
+            }
+            if(resultCode == Activity.RESULT_CANCELED){
+                Log.i("", "no save detected");
+            }
+        }
     }
 
     public static void refreshFragments() {
